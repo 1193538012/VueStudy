@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>01Vue基础练习</title>
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+<div id="app">
+    <!--    使用v-cloak解决插值表达式闪烁的问题，style的display:none-->
+    <p v-cloak>---------{{msg}}================</p>
+    <h4 v-text="msg">================</h4>
+    <!--    默认v-text没有闪烁问题-->
+    <!--     v-text会覆盖里面的内容，但是插值表达式只替换占位符地方的内容-->
+
+    <div v-cloak>{{msg2}}</div>
+    <div v-text="msg2"></div>
+    <div v-html="msg2"></div>
+    <!--    v-html会覆盖，但能解析htnl-->
+
+    <!--    v-bind:vue中提供绑定数据的属性  变量+***********-->
+    <!--    v-bing：可以简写为：-->
+    <!--    v-bind：中可以下合法的JS表达式-->
+    <!--    <input type="button" value="按钮" title="123">-->
+    <!--    <input type="button" value="按钮" v-bind:title="mytitle + '**********'">-->
+    <!--    <input type="button" value="按钮" :title="mytitle + '**********'">-->
+
+
+    <!-- Vue提供了 v-on 事件绑定机制-->
+    <!--    <input type="button" value="按钮" :title="mytitle + '**********'" v-on:click="alert('asd')">-->
+    <!--    <input type="button" value="按钮" :title="mytitle + '**********'" v-on:click="show">-->
+    <input type="button" value="按钮" :title="mytitle + '**********'" @click="show">
+
+    <!--1.如何定义一个基本的Ve代码结构-->
+    <!--2.插值表达式和v-text-->
+    <!--3.v-cloak-->
+    <!--4.v-html-->
+    <!--5.- bind vue提供的属性绑定机制 缩写是：-->
+    <!--6.v-on vue提供的事件绑定机制缩写是@-->
+
+
+    <!--    走马灯效果：猥琐发育别浪-->
+    <input type="button" value="浪起来" @click="lang">
+    <input type="button" value="低调" @click="stop">
+    <h4>{{msg3}}</h4>
+</div>
+</body>
+<script>
+    const App = new Vue({
+        el: '#app',
+        data: {
+            msg: '法法',
+            msg2: '<h1>撒大</h1>',
+            mytitle: '这是一个自己定义的title',
+            msg3: '猥琐发育，别浪~~~！',
+            intervalId: null
+        },
+        methods: {
+            show: function () {
+                alert('123')
+            },
+            lang: function () {
+                //防止多个定时器
+                if (this.intervalId != null) return;
+                var _this = this;
+                this.intervalId = setInterval(() => {
+                    var start = _this.msg3.substring(0, 1);
+                    var end = _this.msg3.substring(1);
+                    _this.msg3 = end + start;
+                }, 200)
+            },
+            stop: function () {
+                clearInterval(this.intervalId);
+                //每当清除了定时器后重新赋值internal为null
+                this.intervalId = null;
+            }
+        }
+    })
+</script>
+</html>
