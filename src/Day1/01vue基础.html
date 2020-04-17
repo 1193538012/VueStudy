@@ -8,16 +8,17 @@
             display: none;
         }
     </style>
+<!--    导入Vue的包-->
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 </head>
 <body>
+<!--Vue 实例所控制的这个区域，就是我们的 V-->
 <div id="app">
-    <!--    使用v-cloak解决插值表达式闪烁的问题，style的display:none-->
+<!--    使用v-cloak解决插值表达式闪烁的问题,这个指令保持在元素上直到关联实例结束编译。和 CSS 规则如 [v-cloak] { display: none } 一起用时，这个指令可以隐藏未编译的 Mustache 标签直到实例准备完毕。-->
     <p v-cloak>---------{{msg}}================</p>
     <h4 v-text="msg">================</h4>
     <!--    默认v-text没有闪烁问题-->
     <!--     v-text会覆盖里面的内容，但是插值表达式只替换占位符地方的内容-->
-
     <div v-cloak>{{msg2}}</div>
     <div v-text="msg2"></div>
     <div v-html="msg2"></div>
@@ -51,10 +52,14 @@
 </div>
 </body>
 <script>
-    const App = new Vue({
-        el: '#app',
-        data: {
-            msg: '法法',
+//    创建一个Vue的实例
+//    当我们导入包后，在浏览器的内存中，就多了一个Vue的构造函数
+//    注意：我们new出来的这个vm对象，就是我们MVVM中的 VM调度者
+    const vm = new Vue({
+        el: '#app',//表示，当前我们new的这个Vue实例，要控制页面上哪个区域
+        //这里的 data 就是 MVVM 中的 M，专门用来保存 每个页面的数据的
+        data: {//data属性中存放的是el要用到的数据
+            msg: '法法',//通过Vue提供的指令，很方便的就能把数据渲染到页面上，程序员不再手动操作Dom元素了【前端的Vue之类的框架，不提倡我们手动去操作Dom元素】
             msg2: '<h1>撒大</h1>',
             mytitle: '这是一个自己定义的title',
             msg3: '猥琐发育，别浪~~~！',
