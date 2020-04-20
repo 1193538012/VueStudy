@@ -23,14 +23,21 @@
 
             <label>
                 Name:
-                <input type="text" class="form-control" v-model="name">
+                <!-- enter 回车 添加  内置修饰符 .tab .delete .esc .space .up .down .left .right -->
+                <!-- 自定义 网上找码 比如F2=113  enter=13         -->
+<!--                https://www.cnblogs.com/wuhua1/p/6686237.html-->
+<!--                <input type="text" class="form-control" v-model="name" @keyup.enter="add">-->
+<!--                <input type="text" class="form-control" v-model="name" @keyup.113="add">-->
+<!--                自定义全局案件修饰符 Vue.config.keyCodes.f2 = 113-->
+                <input type="text" class="form-control" v-model="name" @keyup.f2="add">
             </label>
 
             <input type="button" value="添加" class="btn-primary" @click="add">
 
             <label>
                 搜索名称关键字:
-                <input type="text" class="form-control" v-model="keywords">
+<!--                <input type="text" class="form-control" v-model="keywords" id="search" v-focus v-color>-->
+                <input type="text" class="form-control" v-model="keywords" id="search" v-focus v-color="'red'">
             </label>
         </div>
     </div>
@@ -64,6 +71,48 @@
 
 </body>
 <script>
+
+    //自定义全局案件修饰符
+    Vue.config.keyCodes.f2 = 113
+
+    // 注册或获取全局指令
+    //参数1： 指令的名称，注意，在定义时，指令名称不需要加v-，但是调用时需要加上，
+    //残数： 是一个对象，这个对象身上，有一些指令相关的函数，这些函数可以在特定的阶段，执行相关操作
+    Vue.directive('focus', {
+        //参数 https://cn.vuejs.org/v2/guide/custom-directive.html#%E9%92%A9%E5%AD%90%E5%87%BD%E6%95%B0
+        bind: function (el) {//每当指令绑定到元素时，会立即执行bind函数，执行一次
+            //el为原生JS对象
+            //在元素 刚绑定了指定的时候，还没有插入到dom中去，这时 调用 focus 没有作用，因为一个元素只有插入dom后，才能获取焦点
+            //el.focus()
+
+        },
+        inserted: function (el) {//元素插入到dom的时候执行inserted函数，执行一次
+            el.focus()
+            // 和JS有关的操作，最好在 inserted 中去执行，防止 JS 不生效
+        },
+        update: function () {//当 VNode更新的时候会执行 update，可能执行多次
+
+        },
+        componentUpdated: function () {},
+        unbind: function () {},
+
+    })
+
+    Vue.directive('color',{
+        // 这个元素 不管有没有插入到页面中去，这个元素肯定有了一个内联样式
+        // 将来元素肯定会显示到页面中，这时候，浏览器的渲染引擎必然会解析央视，应用给这个元素
+        bind: function (el, binding, vnode, oldVnode ) {
+            el.style.color = binding.value
+            //和 样式有关的，一般都可以在 bind 执行
+            console.log(binding.name)//指令名
+            console.log(binding.value)//指令的绑定值，例如：v-my-directive="1 + 1" 中，绑定值为 2。
+            //oldValue：指令绑定的前一个值，仅在 update 和 componentUpdated 钩子中可用。无论值是否改变都可用。
+            //arg: 传给指令的参数，可选。例如 v-my-directive:foo 中，参数为 "foo"。
+            //modifiers：一个包含修饰符的对象。例如：v-my-directive.foo.bar 中，修饰符对象为 { foo: true, bar: true }。
+            console.log(binding.expression)//字符串形式的指令表达式。例如 v-my-directive="1 + 1" 中，表达式为 "1 + 1"。
+        }
+    })
+
     const App = new Vue({
         el: '#app',
         data: {
@@ -126,7 +175,7 @@
             }
 
         }
-
     })
+    //document.getElementById('search').focus()  vue所有指令调用时都已v-开头 v-focus
 </script>
 </html>
