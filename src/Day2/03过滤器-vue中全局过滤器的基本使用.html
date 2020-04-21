@@ -35,6 +35,19 @@
         return msg + '===========';
 
     })
+
+    Vue.filter('dataformat',function(dataStr){
+        var dt = new Data(dataStr);
+
+        var y = dt.getFullYear();
+        var n = dt.getMonth() + 1;
+        var d = dt.getData();//getDay为周几
+
+        return `${y}-${n}-${d}`;//模板字符串
+
+    })
+
+
     const App = new Vue({
         el: '#app',
         data: {
