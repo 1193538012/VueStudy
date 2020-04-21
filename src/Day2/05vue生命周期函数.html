@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+<div id="app">
+<h3 id="h3">{{msg}}</h3>
+</div>
+
+</body>
+<script>
+    //https://cn.vuejs.org/v2/guide/instance.html#%E5%AE%9E%E4%BE%8B%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E9%92%A9%E5%AD%90
+    const App = new Vue({
+        el: '#app',
+        data: {
+            msg: 'ok'
+        },
+        methods: {
+            show(){
+                console.log('执行了show方法')
+            }
+        },
+        beforeCreate() {//这是我们遇到的第一个生命周期函数，表示实例完全被创建之前，会执行它
+            //console.log(this.msg)//undefined
+            //this.show()//Vue warn]: Error in beforeCreate hook: "TypeError: this.show is not a function"
+            //注意： 在 beforeCreate 生命周期 函数执行的时候，data和 method都还没有初始化
+        },
+        created() {//这是我们遇到的第二个生命周期函数
+            //console.log(this.msg)
+            //this.show()
+            //注意： 在 created 生命周期 函数执行的时候，data和 method都已经初始化好了
+            //如果要调用 methods 中的方法，或者操作 data 中的数据，最早，只能在 created中操作
+        },
+        //第二和第三步之间vue开始编辑模板，把vue代码中的那些指令进行执行，最终，在内存中生成一个编译好的最终模板字符串
+        //然后，把这个模板字符串，溶染为内存中的DOM此时，只是在内存中，渲染好了模板，井没有把板挂载到真正的页面中去：
+        beforeMount() {// 这是遇到的第3个生命周期函数，表示模板已经在内存中编辑完成了，但是尚未把模板渲染到页面中
+            //console.log(document.getElementById('h3').innerText)//{{ msg }}
+            //在 beforeMount 执行的时候，页面中的元素， 还没有被真正的替换过来，只是之前 写的一些模板字符串
+        },
+        mounted() {// 这是遇到的第4个生命周期函数，表示内存中的模板，已经真实的挂载到了页面中，用户已经可以看到渲染好的页面了
+            console.log(document.getElementById('h3').innerText)//{{ msg }}
+            //在 mounted 是 实例创建的最后一个生命周期函数， 当执行完 mounted 就表示，实例已经被完全创建了
+            //此时，如果没有其它操作的话，这个实例，就静静的躺在我们的内存中，一动不动
+            //注意：如果你需要页面上的某些插件 操作dom 最早要在 mounted 中进行
+        },
+        //只要执行完了 mounted，就表示整个vue实例已经初始化完毕了；
+        //此时，组件已经脱离了创建阶段；进入到了运行阶段
+
+        //这些是组件运行阶段的生命周期函数
+        //只有两个：
+        //beforeUpdate和updated
+        //这俩事件，会根据data数据的改变，有选择性的触发0次到多次
+
+        beforeUpdate() {
+
+        }
+    })
+</script>
+</html>
