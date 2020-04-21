@@ -53,7 +53,7 @@
         <tr v-for="item in search(keywords)" :key="item.id">
             <td>{{item.id}}</td>
             <td v-text="item.name"></td>
-            <td>{{item.ctime}}</td>
+            <td>{{item.ctime | dataformat}}</td>
             <td>
                 <a href="" @click.prevent="del(item.id)">删除</a>
             </td>
@@ -64,6 +64,19 @@
 
 </body>
 <script>
+    Vue.filter('dataformat',function(dataStr){
+        
+        //var dt = new Data(dataStr);
+        //var dt = new Date();
+        var dt = new Date();
+        dt.setTime(dataStr);
+        var y = dt.getFullYear();
+        var n = dt.getMonth() + 1;
+        var d = dt.getDate();//getDay为周几
+
+        return `${y}-${n}-${d}`;//模板字符串
+
+    })
     const App = new Vue({
         el: '#app',
         data: {
