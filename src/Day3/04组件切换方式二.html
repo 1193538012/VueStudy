@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <style>
+
+    </style>
+	<!--  -->
+</head>
+<body>
+<div id="app">
+
+	<a href="" @click.prevent="comName='login'">登录</a>    <!-- 注意加单引号 -->
+	<a href="" @click.prevent="comName='register'">注册</a>
+
+	<!-- Vue提供了· component ，来展示对应的名称的组件  :is属性绑定  "login"当作一个表达式解析，并不是一个字符串  "'login'"才对 -->
+	<!--<component :is="'login'"></component> -->
+	<component :is="comName"></component>
+</div>
+
+</body>
+<script>
+	<!-- 组件名称是字符串 -->
+	Vue.component('login',{
+		template: '<h1>登录界面</h1>',
+	})
+	Vue.component('register',{
+		template: '<h1>注册界面</h1>',
+	})
+    var vm = new Vue({
+        el: '#app',
+        data: {
+			comName : ''
+        },
+        methods: {}
+
+    })
+	
+
+</script>
+</html>

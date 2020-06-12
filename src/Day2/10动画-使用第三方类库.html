@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <style>
+/*   过程      enter                      leave
+   .v-enter  ->   .v-enter-to   .v-leave  ->  .v-leave-to
+   时间设置  .v-enter-active            .v-leave-active
+   */
+    .v-enter,
+    .v-leave-to{
+        opacity: 0;
+        transform: translateX(150px);
+    }
+    .v-enter-active,
+    .v-leave-active{
+        transition: all 0.4s ease;
+    }
+	
+	
+	.my-enter,
+    .my-leave-to{
+        opacity: 0;
+        transform: translateY(70px);
+    }
+    .my-enter-active,
+    .my-leave-active{
+        transition: all 0.4s ease;
+    }
+	
+	
+
+    </style>
+	
+	<link rel="stylesheet" href="../css/animate.css">
+</head>
+<body>
+<div id="app">
+<input type="button" value="toggle" @click="flag=!flag">
+    <transition enter-active-class="bounceIn" leave-active-class="bounceOut" :duration="{enter:200,leave:400}">
+        <h3 v-if="flag">这是一个h3</h3>
+    </transition>
+	
+
+</div>
+
+</body>
+<script>
+    const App = new Vue({
+        el: '#app',
+        data: {
+            flag:false
+        },
+        methods: {}
+
+    })
+</script>
+</html>

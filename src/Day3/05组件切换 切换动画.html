@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <style>
+		.v-enter,
+		.v-leave-to{
+			opacity: 0;
+			transform: translateX(150px)
+		}
+		
+		.v-enter-active,
+		.v-leave-active{
+			transition: all 0.5s ease;
+		}
+		
+    </style>
+	<!--  -->
+</head>
+<body>
+<div id="app">
+
+	<a href="" @click.prevent="comName='login'">登录</a>    <!-- 注意加单引号 -->
+	<a href="" @click.prevent="comName='register'">注册</a>
+
+	<!-- 效果不太友好，login走完 register再进来 -->
+	<!--<component :is="'login'"></component> -->
+	<!-- <transition mode="in-out"> -->
+	<transition mode="out-in">
+		<component :is="comName"></component>
+	</transition>
+</div>
+
+</body>
+<script>
+	<!-- 组件名称是字符串 -->
+	Vue.component('login',{
+		template: '<h1>登录界面</h1>',
+	})
+	Vue.component('register',{
+		template: '<h1>注册界面</h1>',
+	})
+    var vm = new Vue({
+        el: '#app',
+        data: {
+			comName : ''
+        },
+        methods: {}
+
+    })
+	
+
+</script>
+</html>

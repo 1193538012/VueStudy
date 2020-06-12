@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <style>
+
+    </style>
+		<link rel="stylesheet" href="../css/bootstrap.min.css">
+</head>
+<body>
+<!--  -->
+<div id="app">
+    <input type="button" value="获取元素" @click="getElement">
+
+    <h3 ref="myh3">哈哈哈，今天天气太好了！</h3>
+
+    <login ref="mylogin"></login>
+</div>
+
+
+<template id="login">
+    <h1>登录组件</h1>
+</template>
+</body>
+<script>
+  
+    var login = {
+        template : '#login',
+        data(){
+            return {
+                msg : 'son msg'
+            }
+        },
+        methods: {
+            show(){
+                console.log('调用了子组件的方法')
+            }
+        }
+    }
+
+
+    var vm = new Vue({
+        el: '#app',
+        data: {
+          
+        },
+        created() {
+           
+        },
+        methods: {
+            getElement(){
+                //console.log(this.$refs.myh3.innerText)
+
+                console.log(this.$refs.mylogin.msg)
+                this.$refs.mylogin.show()
+
+            }
+        },
+		components:{
+            login
+		}
+    })
+
+
+</script>
+</html>

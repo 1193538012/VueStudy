@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <style>
+
+    </style>
+</head>
+<body>
+<div id="app">
+	<!-- 如果要使用组件，直接使用自己定义的组件名称，以HTML标签的形式引入即可-->
+	<my-com1></my-com1>
+	<my-com2></my-com2>
+	<my-com3></my-com3>
+	<hr>
+	<my-com4></my-com4>
+	<!--<login></login>   did you register the component correctly? For recursive compon --->
+</div>
+
+<div id="app2">
+	<my-com4></my-com4>
+	<login></login>
+</div>
+
+<!-- 在app外边使用 template 元素， 定义组建的html模板结构 -->
+<template id="tmp1">
+	<div>
+		<h1>这是通过 template元素，在外部定义的组件结构，这个方式，有代码的智能提示和高亮</h1>
+		<h4>好用，不错！</h4>
+	</div>
+</template>
+<template id="tmp2">
+	<div>
+		<h1>这是私有的login组件</h1>
+	</div>
+</template>
+</body>
+<script>
+	//模块化 是从代码逻辑的角度进行划分的(node),方便代码分层开发，保证每个功能模块职能单一
+	//组件化 是从UI界面的角度进行划分的，方便UI组件的重用
+	
+	//创建组件
+	//方式一 
+	// 1.1使用Vue.extend创建全局的Vue组件
+	var com1 = Vue.extend({
+		template:'<h3>这是使用 Vue.extend 创建的组件 </h3>'//通过这个属性指定组件要展示的html结构
+	})
+	
+	// 1.2 使用 Vue.component('组件名称',创建出来的组件模板对象)
+	Vue.component('myCom1',com1);//名称注册时为驼峰，使用时-分开   如果不使用驼峰，直接拿命名名称即可
+	
+	//合并写法 参数一名称 参数二 Vue.extend 创建的组件 template为要展示的HTML
+	Vue.component('myCom2',Vue.extend({
+		template:'<h3>2222222222222222222 </h3>'
+	}));
+	
+		
+	//方式二
+	Vue.component('myCom3',{
+		//template:'<h3>333333333333333333 </h3>'
+		//template:'<h3>333333333333333333 </h3><span><123/span>'  报错 omponent template should contain exactly one root element. 只能有一个根元素
+		template:'<div><h3>333333333333333333 </h3><span>123</span></div>'
+	});
+	
+	//方式三 最实用，不进行html拼接
+	Vue.component('myCom4',{
+		template: '#tmp1'
+	});
+	
+	
+	
+	
+    var App = new Vue({
+        el: '#app',
+        data: {
+        },
+        methods: {}
+
+    })
+	
+	 var App2 = new Vue({
+        el: '#app2',
+        data: {
+        },
+        methods: {},
+		filters:{},
+		directives:{},
+		components:{//定义私有组件
+			login:{
+				template:'#tmp2'
+			}
+		
+		},
+		
+		
+		beforeCreate(){},
+		created(){},
+		beforeMounted(){},
+		mounted(){},
+		beforeUpdate(){},
+		updated(){},
+		beforeDestory(){},
+		destoryed(){}
+		
+
+    })
+</script>
+</html>

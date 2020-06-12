@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <style>
+	li{
+		border:1px dashed #999;
+		margin: 10px;
+		line-height:35px;
+		padding-left:35px;
+		font-size:15px;
+	}
+	
+	li:hover{
+		background-color: hotpink;
+		transition: all 0.4s ease
+	}
+	
+	.v-enter,
+    .v-leave-to{
+        opacity: 0;
+        transform: translateY(150px);
+    }
+    .v-enter-active,
+    .v-leave-active{
+        transition: all 0.4s ease;
+    }
+	
+	
+    </style>
+	
+	<link rel="stylesheet" href="../css/animate.css">
+</head>
+<body>
+<div id="app">
+
+<div>
+	<label>
+		Id:
+		<input type="text" v-model="id">
+	</label>
+	<label>
+		Name:
+		<input type="text" v-model="name">
+	</label>
+	
+	<input type="button" value="添加" @click="add">
+	
+	
+	<!-- 与 --> 
+	<!--  -->
+	
+</div>
+<!-- <ul> --> 
+	<transition-group appear tag="ul"><!-- appear页面入场效果 -->
+		<li v-for="(item,i) in list" :key="item.id" @click="del(i)">
+			{{item.id}} --- {{item.name}}
+		</li>
+	</transition-group>
+<!-- </ul> -->
+</div>
+
+</body>
+<script>
+    const App = new Vue({
+        el: '#app',
+        data: {
+		id:'',
+		name:'',
+            list:[
+			{id:1,name:'照理'},
+			{id:2,name:'照理2'},
+			{id:3,name:'照理3'},
+			{id:4,name:'照理4'},
+			{id:5,name:'照理5'},
+			]
+        },
+        methods: {
+			add(){
+				this.list.push({id:this.id,name:this.name});
+				this.id = this.name = '';
+			},
+			del(i){
+				this.list.splice(i,1)
+			}
+		}
+
+    })
+</script>
+</html>

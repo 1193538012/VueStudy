@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <style>
+
+    </style>
+		
+</head>
+<body>
+<!--  -->
+<div id="app">
+    <!-- 传递data上的v-bind或者： 进行属性传递
+         事件绑定机制不能用：传递，用v-on       -->
+	<com2 v-on:func="show"></com2>
+</div>
+<template id="tmp1">
+<div>
+    <h1>这是 子组件</h1>
+    <input type="button" value="这是子组件的按钮，点击触发父组件的方法" @click="myclick">
+</div>
+
+</template>
+</body>
+<script>
+    //定义了一个字面量类别的 组件模板对象
+    var com2 = {
+        template: '#tmp1',//通过指定了一个id， 表示 说 要去 加载 这个指定id的 template 元素中的内容
+        data(){
+            return {
+                sonmsg: {
+                    name : '大头儿子',
+                    age : 6
+                }
+            }
+        },
+        methods:{
+            myclick(){
+                //emit 是 触发的意思
+                //this.$emit('func')
+                //this.$emit('func',123,456)//调用父组件的方法，并向父组件传参数
+                this.$emit('func',this.sonmsg)
+            }
+        }
+    }
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            msg: '123父组件的数据',
+            datamsgFromSon : null
+        },
+        methods: {
+            show(data,data2){
+                console.log('调用了父组件的show 方法------' + data)
+                this.datamsgFromSon = data;
+            }
+        },
+		components:{
+            //com2,
+            com2: com2,
+		}
+    })
+
+
+</script>
+</html>

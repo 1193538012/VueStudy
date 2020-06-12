@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <style>
+		.ball{
+			width: 15px;
+			height: 15px;
+			border-radius: 50%;
+			background-color: red;
+		}
+	
+
+    </style>
+	
+	<link rel="stylesheet" href="../css/animate.css">
+</head>
+<body>
+<div id="app">
+<input type="button" value="快到碗里来" @click="flag=!flag">
+<transition
+	@before-enter="beforeEnter"
+	@enter="enter"
+	@after-enter="afterEnter">
+       <div class="ball" v-show="flag">
+	
+	</div>
+    </transition>
+</div>
+
+</body>
+<script>
+    const App = new Vue({
+        el: '#app',
+        data: {
+            flag:false
+        },
+        methods: {
+		//el，表示要执行动画的元素
+		beforeEnter(el){
+			el.style.transform = "translate(0,0)"
+		},
+		enter(el,done){
+			el.offsetWidth//刷新 left top 都可以
+			el.style.transform = "translate(150px,450px)"
+			el.style.transition = "all 1s ease"
+			/*当只用 JavaScript 过渡的时候，在 enter 和 leave 中必须使用 done 进行回调。否则，它们将被同步调用，过渡会立即完成。*/
+			//立即执行
+			done()
+		},
+		afterEnter(el){
+			this.flag=!this.flag
+		},
+		}
+
+    })
+</script>
+</html>

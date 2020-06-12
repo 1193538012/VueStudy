@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <style>
+
+    </style>
+</head>
+<body>
+<div id="app">
+<a href="" @click.prevent="flag=true">登录</a>
+<a href="" @click.prevent="flag=false">注册</a>
+<login v-if="flag"></login>
+<register v-else="flag"></register>
+</div>
+<!--   缺点  只能两个  用这种if else flag的方式 -->
+</body>
+<script>
+	Vue.component('login',{
+		template: '<h1>登录界面</h1>',
+	})
+	Vue.component('register',{
+		template: '<h1>注册界面</h1>',
+	})
+    var vm = new Vue({
+        el: '#app',
+        data: {
+			flag : true
+        },
+        methods: {}
+
+    })
+	
+
+</script>
+</html>
