@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+    <style>
+
+    </style>
+		<link rel="stylesheet" href="../css/bootstrap.min.css">
+</head>
+<body>
+<!--  -->
+<div id="app">
+
+    <router-link to="/login?id=2&name=test" tag="span">登录</router-link>
+    <router-link to="/register">注册</router-link>
+
+
+    <router-view></router-view>
+
+
+</div>
+
+
+<template id="login">
+    <h1>登录--{{$route.query.id}}--{{$route.query.name}}</h1>
+</template>
+
+<template id="register">
+    <h1>注册</h1>
+</template>
+</body>
+<script>
+  
+    var login = {
+        template : '#login',
+        data(){
+            return {
+                msg:'123'
+            }
+        },
+        created() {
+            console.log(this.$route.query.id);
+            console.log(typeof(this.$route.query.id))
+        },
+        methods: {
+
+        }
+    }
+
+    var register = {
+        template : '#register',
+        data(){
+            return {
+                msg : 'son msg'
+            }
+        },
+        methods: {
+        }
+    }
+
+    var router = new VueRouter({
+        routes:[
+            {path: '/login', component : login},
+            {path: '/register', component : register},
+        ],
+        linkActiveClass: 'myactive'//默认是这个router-link-active
+    })
+
+    var vm = new Vue({
+        el: '#app',
+        data: {
+          
+        },
+        created() {
+           
+        },
+        methods: {
+            getElement(){
+            }
+        },
+		components:{
+            login,
+            register
+        },
+        router
+    })
+
+
+</script>
+</html>
