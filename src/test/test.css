@@ -1,0 +1,114 @@
+@charset "utf-8";
+/* CSS Document */
+body,ul,li,p,dd,dt,dl{ margin:0; padding:0;}
+ul,li{ list-style:none;}
+img{ border:0;}
+a{ text-decoration:none;}
+*{ font-family:"Microsoft YaHei";font-weight:normal}
+.fl{ float:left;}
+.fr{ float:right;}
+.cl{ clear:both;}
+
+#zongNew{ width:100%; height:auto; margin:0 auto;}
+.left_box{ min-width:250px;width:100%; height:750px; border:1px solid #e4e4e4; padding-bottom:20px; background-color:#ffffff; position:relative;z-index:1;}
+.left_title{ width:100%; height:50px; background-color:#ededed;}
+.left_title span{ display:block; padding-left:15px; line-height:50px; font-size:16px; color:#323232;}
+.subNavBox{width:100%; margin:0 auto;}
+.subNav{cursor:pointer;border-left:3px solid #ffffff;border-bottom:solid 1px #e5e3da;font-size:14px;color:#323232;line-height:50px;padding-left:10px;background:url(../../images/mxzx/jiantou1.png) no-repeat;background-position:95% 50%; overflow:hidden;}
+.subNav img{ display:block; margin-top:16px; float:left; margin-right:5px;}
+.subNav span{ display:block; float:left;}
+.subNav:hover{ border-left:3px solid #00b4ff; background-color:#f7fcff; color:#323232;}
+.currentDd{color:#323232; border-left:3px solid #00b4ff; background-color:#f7fcff;}
+.currentDt{background-image:url(../../images/mxzx/jiantou.png);}
+.navContent{display: none;/*border-bottom:solid 1px #e5e3da;*/}
+.navContent li{width:100%;heighr:40px;}
+.navContent li a{ /* padding-left:36px; */display:block;font-size:14px;line-height:40px;color:#646464}
+.navContent li a:hover{color:#323232;background-color:#fafafa}
+.navContent li ul{width:260px;}
+.right_box{min-width:800px; width:100%; height:auto; margin-left:1%;margin-top:-30px}
+.r_top{ padding-bottom:10px; background-color:#ffffff;}
+
+.right_btn_box{ width:100%; height:50px;  margin-top:26px;}
+.right_btn_box a{ display:block; float:left; font-size:14px; color:#646464; line-height:30px; margin-left:20px; padding-top:10px; padding-left:22px; cursor:pointer; margin-right:10px;}
+.right_btn_box a:hover{ color:#0c9bff;}
+.right_btn_box a.save{ background:url(../../images/mxzx/save.png) left 16px no-repeat;}
+.right_btn_box a.publish{ background:url(../../images/mxzx/publish.png) left 16px no-repeat;}
+.right_btn_box a.update{ background:url(../../images/mxzx/update.png) left 16px no-repeat;}
+.right_btn_box a.execute{ background:url(../../images/mxzx/execute.png) left 16px no-repeat;}
+.right_btn_box a.delete{ background:url(../../images/mxzx/delete.png) left 16px no-repeat;}
+.right_btn_box a.undo{ background:url(../../images/mxzx/undoEnd.png) left 11px no-repeat;width: 41px;background-size: 24px;}
+.right_btn_box a.delNode{ background:url(../../images/mxzx/garbage.png) left 11px no-repeat;width: 93px;background-size: 24px;}
+.right_btn_box a.overview{ background:url(../../images/mxzx/overview.png) left 16px no-repeat;}
+.container{ width:100%; height: 715px; position:relative; overflow-x:hidden;overflow-y: hidden; margin:0 auto;margin-top:10px; background-color:#f7fcff;margin-top:-20px;}
+.container_qp{ width:100%; height:100%; position:fixed; top:0; left:0; z-index:99;}
+.qp{ display:block; width:36px; height:36px; float:right; margin-right:10px; margin-top:20px; cursor:pointer; background:url(../../images/mxzx/qp.png) no-repeat;}
+.close{width:36px; height:36px; float:right; margin-right:20px; margin-top:20px; cursor:pointer; background:url(../../images/mxzx/close1.png) no-repeat; display:none;}
+
+
+.aLabel{ font-size:12px; color:red}
+.result{width:98%; height:auto; margin:0 auto; margin-top:10px; border:1px dashed #f39b07; padding-top:10px; padding-bottom:10px;}
+.result font{ width:96%; margin:0 auto;font-size:14px; color:#323232; line-height:30px; display:block;}
+
+.sjsx{ background-color:#f7fcff; padding-bottom:10px; margin-top:5px; padding-top:10px;}
+.sjsx_box{width:98%;border:1px solid #e5e3da;  margin:0 auto;}
+.sjsx_title{  height:50px;border-bottom:1px solid #e5e3da;}
+.sjsx_title .fl{ display:block; height:16px; font-size:16px; color:#323232; border-left:4px solid #00b4ff; margin-top:18px; line-height:16px; margin-left:10px; padding-left:6px; font-weight:bold;}
+/*.sjsx_button a{ border-radius:4px !important;display:block; float:left; margin-right:10px; padding-left:6px; padding-right:6px; height:30px; line-height:30px; font-size:14px; border-radius:2px; color:#ffffff; margin-top:10px; cursor:pointer;}
+.sjsx_button a.update2{ background-color:#2db7f5;}
+.sjsx_button a.export{ background-color:#3d4a74;}
+.sjsx_button a.add{ background-color:#f39b07;} */
+
+
+.con_content{ background: #fff;width: 95%; margin:25px auto;}
+.con_content th{ background:#efefef; height: 42px; line-height: 42px;text-align: center;}
+.con_content td{height: 35px; line-height: 35px; text-align: center; border-bottom: 1px solid #edeff1;}
+.con_content .tr:hover{ background:#f7fcff; cursor:pointer;} 
+.inforss table{border-collapse: collapse;box-shadow: 0 0 8px rgba(175, 175, 175,.5);}
+.odd{ background:#fbfbfb}
+
+#tjgl{
+	background: #fff;
+    box-shadow: 0 0 8px rgba(175, 175, 175,.5);
+    width: 97%;
+    margin: 25px auto;
+    padding: 2px 0;
+}
+.#tjgl h2{color: #132645; font-size: 16px; line-height: 42px; height: 42px; padding-left: 20px; border-bottom: 1px solid  #f0eff2;}
+
+/* .result_table td{ text-align:center; font-size:14px; color:#646464; line-height:40px;}
+.result_title td{ height:40px; background-color:#efefef; font-size:14px; color:#323232; font-weight:bold;border-bottom:1px solid #e5e3da;}
+.odd{ background-color:#fafafa;}
+.result_table .tr:hover{ background:#f7fcff; cursor:pointer;} */
+
+
+.page_box{ width:98%; height:40px; margin:0 auto;}
+.page{ display:table;width:auto}
+.page span{ display:block; float:left; font-size:12px; color:#646464; line-height:40px; margin-right:10px;}
+.page a{ display:block; float:left; width:20px; height:20px; cursor:pointer; margin-top:5px;}
+.page a img{ display:block; margin-top:10px;}
+.page input{width:30px; float:left; height:26px; border:1px solid #e5e3da; margin-top:7px; margin-right:8px; text-align:center; font-size:12px; color:#646464;}
+
+
+
+
+
+
+/* 界面可拖拽样式 */
+.rc-handle-container {
+  position: relative;
+}
+.rc-handle {
+  position: absolute;
+  width: 7px;
+  cursor: ew-resize;
+  margin-left: -3px;
+  z-index: 2;
+}
+table.rc-table-resizing {
+  cursor: ew-resize;
+}
+table.rc-table-resizing thead,
+table.rc-table-resizing thead > th,
+table.rc-table-resizing thead > th > a {
+  cursor: ew-resize;
+}

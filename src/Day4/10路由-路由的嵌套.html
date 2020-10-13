@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+    <style>
+
+    </style>
+		<link rel="stylesheet" href="../css/bootstrap.min.css">
+</head>
+<body>
+<!--  -->
+<div id="app">
+
+    <router-link to="/account" tag="span">Account</router-link>
+    <router-view></router-view>
+
+
+</div>
+
+
+<template id="tmp1">
+    <div>
+        <h1>这是 Account 组件</h1>
+        <router-link to="/account/login">登录</router-link>
+        <router-link to="/account/register">注册</router-link>
+        <router-view></router-view>
+    </div>
+</template>
+
+<template id="tmp2">
+    <h3>登录</h3>
+</template>
+
+<template id="register">
+    <h1>注册</h1>
+</template>
+</body>
+<script>
+  
+    var account = {
+        template : '#tmp1',
+        data(){
+            return {
+                msg:'123'
+            }
+        },
+        created() {
+        },
+        methods: {
+
+        }
+    }
+
+    var login = {
+        template : '#tmp2',
+        data(){
+            return {
+                msg:'123'
+            }
+        },
+        created() {
+        },
+        methods: {
+
+        }
+    }
+    var register = {
+        template : '#register',
+        data(){
+            return {
+                msg : 'son msg'
+            }
+        },
+        methods: {
+        }
+    }
+
+    var router = new VueRouter({
+        routes:[
+            {path: '/account', component : account,
+                children:[
+                    //使用chi1dren属性，实现子路由，同时，子路由的path前面，不要带/，否则永远以根路径开始调求，这样不方使我们用户去理解ULI地址
+                    {path: 'login',  component : login },
+                    {path: 'register',  component : register }
+                ]
+            
+            },
+            //{path: '/account/login', component : login},
+            //{path: '/account/register', component : register},
+        ],
+        linkActiveClass: 'myactive'//默认是这个router-link-active
+    })
+
+    var vm = new Vue({
+        el: '#app',
+        data: {
+          
+        },
+        created() {
+           
+        },
+		components:{
+            register
+        },
+        router
+    })
+
+
+</script>
+</html>

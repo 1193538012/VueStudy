@@ -19,7 +19,7 @@
 <!--  如果元素涉及到 频繁的切换 ，最好不要使用v-if，而是推荐使用v-show  -->
 <!--  如果元素可能永远也不会显示出来被用户看到，则推荐使用v-if  -->
 
-    <h3 v-if="flag">这是用v-if控制的元素</h3>
+    <h3 v-if="flag&&flag2">这是用v-if控制的元素</h3>
     <h3 v-show="flag">这是用v-show控制的元素</h3>
 </div>
 
@@ -28,7 +28,8 @@
     const App = new Vue({
         el: '#app',
         data: {
-        flag:true
+        flag:true,
+        flag2:true
         },
         methods: {
             // toggle(){

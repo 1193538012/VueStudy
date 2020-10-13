@@ -1,0 +1,1757 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<template th:substituteby="framework/pageset.html"></template>
+<title>数据图谱</title>
+<script th:src="@{/js/sjzygl/g6-3.6.0.min.js}"></script>
+<script type="text/javascript"
+	th:src="@{/plugin/datetimepicker/datetimepicker.min.js}"></script>
+<script type="text/javascript"
+	th:src="@{/plugin/jqueryui/jquery-ui.min.js}"></script>
+<script type="text/javascript"
+	th:src="@{/plugin/zTree_v3/js/jquery.ztree.core.js}"></script>
+<script type="text/javascript"
+	th:src="@{/plugin/jqueryui/jquery.resizableColumns.js}"></script>
+<link rel="stylesheet" th:href="@{/css/mxzx/normalize.css}">
+<link rel="stylesheet" th:href="@{/css/sjzygl/sjtp.css}">
+<link rel="stylesheet" type="text/css" th:href="@{/icon/iconfont.css}">
+<link rel="stylesheet" th:href="@{/css/mxzx/circular-menu.css}">
+<link rel="stylesheet"
+	th:href="@{/plugin/zTree_v3/css/zTreeStyle/zTreeStyle.css}"
+	type="text/css">
+
+<style>
+font {
+	font: 14px Microsoft YaHei;
+	color: black;
+}
+
+.cn-menu1 {
+	position: absolute;
+}
+
+.rect-icon {
+	background: #fff;
+	display: inline-block !important;
+}
+
+.circle-icon {
+	background: #f94321;
+	display: inline-block !important;
+	border-radius: 50%;
+}
+
+svg {
+	border-radius: 10px;
+}
+
+.my-icon {
+	background: url("images/circular-menu.png");
+}
+
+.icon1 {
+	background-position: 0 0;
+}
+
+.icon2 {
+	background-position: 0 -56px;
+}
+
+.icon3 {
+	background-position: 0 -116px;
+}
+
+.wzhoner {
+	text-overflow: inherit;
+	overflow: visible;
+	white-space: pre-line;
+}
+
+.ychoner {
+	text-overflow: -o-ellipsis-lastline;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	margin-top: 10px;
+}
+
+.form-control {
+	display: block;
+	width: 100%;
+	height: 34px;
+	padding: 6px 12px;
+	font-size: 14px;
+	line-height: 1.42857143;
+	color: #555;
+	background-color: #fff;
+	background-image: none;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+}
+
+.result_table  td {
+	width: 200px !important;
+}
+
+.importData {
+	float: right;
+	display: block;
+	font-size: 14px;
+	color: #646464;
+	line-height: 30px;
+	margin-left: 22px;
+	padding-top: 10px;
+	padding-left: 21px;
+	cursor: pointer;
+	margin-right: 53px;
+}
+/* #container > div{
+            z-index:0 !important;
+        } */
+canvas {
+	/* position: absolute;left: 0; */
+	/* z-index: 1; */
+	
+}
+
+.tooltip {
+	position: relative;
+	display: inline-block;
+}
+
+.tooltip .tooltiptext {
+	visibility: hidden;
+	width: 120px;
+	background-color: black;
+	color: #fff;
+	text-align: center;
+	border-radius: 6px;
+	padding: 5px 0;
+	/* 定位 */
+	position: absolute;
+	z-index: 1;
+}
+
+.tooltip:hover .tooltiptext {
+	visibility: visible;
+	top: 3px;
+}
+
+html, body, form {
+	background-color: #FFF;
+}
+
+.layui-layer-title {
+	background-color: #1b3974;
+	color: #FFF;
+}
+
+.container {
+	width: 100%;
+	height: 700px;
+	/* position:relative; */
+	margin: 0 auto;
+	margin-top: 10px;
+	/* background-color:#f7fcff; */
+}
+
+/*  */
+.searchNodeDiv {
+	cursor: pointer;
+	display: inline-block;
+}
+
+.searchNodeA {
+	
+}
+
+.searchNodeInput {
+	position: absolute;
+	margin: auto;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 100%;
+	/* width: 300px; */
+	width: 0;
+	height: 35px;
+	outline: none;
+	border: none;
+	background: white;
+	color: black;
+	border-radius: 30px;
+	/* box-shadow: 0 0 25px 0 black, 0 20px 25px 0 rgba(0, 0, 0, 0.2); */
+	transition: all 1s;
+	opacity: 0;
+	/* opacity: 0.5; */
+	/* z-index: 5; */
+	letter-spacing: 0.1em;
+	border: 1px solid #e2e2e2;
+	color: #646464;
+	/* padding: 11px; */
+	font-size: 14px;
+	outline: 0;
+	-webkit-border-radius: 0px 3px 3px 0px;
+	-moz-border-radius: 0px 3px 3px 0px;
+	border-radius: 0px 3px 3px 0px;
+	margin-top: 0px;
+}
+
+.searchNodeDiv input:focus {
+	width: 300px;
+	opacity: 1;
+	cursor: text;
+	padding: 0 80px 0 20px;
+}
+
+.searchNodeA {
+	position: absolute;
+	left: 86.5%;
+	top: 23%;
+}
+
+.searchNodeA:focus ~ .searchNodeInput {
+	opacity: 1;
+	width: 300px;
+	cursor: text;
+	padding: 0 80px 0 20px;
+}
+</style>
+</head>
+<body style="">
+
+	<div class="sj_con">
+		<!-- style="display:none;" -->
+		<div class="searchNode">
+			<div class="search"></div>
+		</div>
+		<div id="zongNew" style="margin-left: 0px;">
+			<table style="width: 99%; table-layout: fixed;" id="myTable">
+				<tr style="width: 100%">
+
+					<th valign="top" style="width: 20%" data-resizable-column-id="a">
+						<div class="left_box fl" id="zctd">
+							<div class="subNavBox" style="height: 700px">
+								<div id="app">
+									<input type="text" class="form-control" style="padding: 0 0;"
+										placeholder="请输入资源名称或资源名称" v-model="keywords" @input="search">
+
+								</div>
+								<div id="zTreeDiv" class="ztree"
+									style="width: 100%; height: 96.5%; overflow-y: auto;"></div>
+							</div>
+						</div>
+					</th>
+					<th style="width: 80%; height: 730px;" valign="top"
+						data-resizable-column-id="b">
+						<div class="right_box fl" style="height: 100%;">
+							<div class="r_top" style="height: 100%;">
+
+								<!-- <div class="right_btn_box" id="sfcdl" style="height: 7%;width:30%;display:none;">
+								<hy-input @keyup.enter.native="searchNode" placeholder="请输入资源名称" v-model="nodeName">
+								  <template slot="append"><hy-button text="查询" @click="searchNode" ></hy-button> </template>
+								</hy-input>
+								
+                            </div> -->
+
+								<div class="container" id="container" style=""></div>
+							</div>
+						</div>
+						<div class="cl"></div>
+					</th>
+				</tr>
+			</table>
+		</div>
+	</div>
+	<script th:inline="javascript">
+var context = /*[[@{/}]]*/;// /kshjm/
+var context_path = getRootPath();
+var zTreeObj;
+var zTreeNodesBak;
+var ztNum = 1;
+
+
+
+var vm = new Vue({
+    el: "#zongNew",//  zongNew app
+    data: {
+		keywords: '',
+		zTreeNodes:[],
+		nodeName: ''
+    },
+    mounted: function() {
+    	this.hqsj();
+    },
+    methods: {
+    	search(){
+          	var newList = []; 
+          	var expandNodes = []
+          	newList = this.zTreeNodes.filter((item,i)=>{
+                if(item.jb!=null || item.pId == '000000' || item.name.includes(this.keywords) || item.zybq.includes(this.keywords)){
+                    return item;
+                }
+            })
+          	zTreeObj = $.fn.zTree.init($("#zTreeDiv"), setting, newList);
+			//如果有关键字，就全部展开
+          	if(!isEmpty(this.keywords)){
+          		var nodes = zTreeObj.getNodes();
+              	for (var i = 0; i < nodes.length; i++) { //设置节点展开
+    				zTreeObj.expandNode(nodes[i], true, true, true);
+    			}
+          	}
+			//重新计算节点数量
+            calculate()
+        },
+        searchNode() {
+        	
+        	clearAllStats();
+        	
+        	var nodeName = this.nodeName;
+        	
+        	if(nodeName == ''){
+        		//$.alert("提示信息!","请输入查询内容!")
+        		clearAllStats();
+    			return;
+        	}
+        	
+        	var selectedNodes = graph.getNodes().filter((item,i)=>{
+                if(item.getModel().label == nodeName){
+                    return item;
+                }
+            })
+            
+            
+            if(selectedNodes.length > 0){
+            	const id = selectedNodes[0].getID();
+            	const item = graph.findById(id);
+    	      	graph.setAutoPaint(false);
+    	      	graph.getNodes().forEach(function(node) {
+    	      	    graph.clearItemStates(node);//清除元素状态，可以一次性清除多个状态。
+    	      	    graph.setItemState(node, 'dark', true);
+    	      	});
+    	        graph.setItemState(item, 'dark', false);
+    	      	graph.setItemState(item, 'highlight', true);
+    	      	graph.getEdges().forEach(function(edge) {
+    		      	if (edge.getSource() === item) {
+    		      	    graph.setItemState(edge.getTarget(), 'dark', false);
+    		      	    graph.setItemState(edge.getTarget(), 'highlight', true);
+    		      	    graph.setItemState(edge, 'highlight', true);
+    		      	    edge.toFront();
+    		      	} else if (edge.getTarget() === item) {
+    		      	    graph.setItemState(edge.getSource(), 'dark', false);
+    		            graph.setItemState(edge.getSource(), 'highlight', true);
+    		            graph.setItemState(edge, 'highlight', true);
+    		     	    edge.toFront();
+    		      	} else {
+    		      	    graph.setItemState(edge, 'highlight', false);
+    		        }
+    	      	});
+    	      	graph.paint();
+    	      	graph.setAutoPaint(true); 
+            	
+            }
+        	
+        	
+        	
+	        
+	      	
+        	
+        },
+        query : function() {
+          
+        },
+        hqsj : function(){
+            var url = $$pageContextPath + "bqfzTzsfzController/getDirectory";
+            var that = this;
+            $.request({
+                url : url,
+                params : {
+                	
+                },
+                success : function(response) {
+                	debugger;
+                	zTreeNodesBak = eval(response.parameters.ztTree);
+                	//根据类型区分图片
+                	for(var i=1; i<zTreeNodesBak.length; i++){
+                		//jb不是空，为主题节点
+                		if(!isEmpty(zTreeNodesBak[i].jb)){
+                			//回显主题信息
+                			if(!isEmpty(zTreeNodesBak[i].image)){ //回显照片
+                				zTreeNodesBak[i].icon = "data:image/png;base64,"+ zTreeNodesBak[i].image ;
+                			}
+                		}
+                		//jdbc
+                		else if(zTreeNodesBak[i].sjylx == '1'){
+                			zTreeNodesBak[i].icon = context_path + 'images/mxzx/jdbc.png' ;
+                		}
+                		//流式
+                		else if(zTreeNodesBak[i].sjylx == '2'){
+                			zTreeNodesBak[i].icon = context_path + 'images/mxzx/kafka.png' ;
+                		}
+                		//内存
+						else if(zTreeNodesBak[i].sjylx == '3'){
+                			zTreeNodesBak[i].icon = context_path + 'images/mxzx/memoryDb.png' ;
+                		}
+                		//其他
+						else{
+                			zTreeNodesBak[i].icon = context_path + 'images/mxzx/excel.png' ;
+						}
+                	}
+                	//渲染主题数
+                	zTreeObj = $.fn.zTree.init($("#zTreeDiv"), setting, zTreeNodesBak);
+                	//获取主题节点，计算该节点下所有资源目录的数目
+                	calculate()
+                	//传给vue，数据过滤时使用
+                	that.zTreeNodes = zTreeNodesBak;
+                }
+            });
+        }
+    },
+});
+
+
+
+
+
+
+
+
+	var canvasX = 0;//记录鼠标点击画布时的x的位置，用于生成节点
+	var canvasY = 0;//记录鼠标点击画布时的y的位置，用于生成节点
+	var timeoutID = null;
+	/**模型计数器*/
+	var modelCounter = 0;
+	var endPointNum=0;
+
+	//注册点击两节点添加连线
+	G6.registerBehavior('click-add-edge', {
+	// 设定该自定义行为需要监听的事件及其响应函数
+	getEvents() {
+		return {
+			'node:click' : 'onClick', // 监听事件 node:click，响应函数时 onClick
+			mousemove : 'onMousemove', // 监听事件 mousemove，响应函数时 onMousemove
+			'edge:click' : 'onEdgeClick', // 监听事件 edge:click，响应函数时 onEdgeClick
+			//'node:drag' : 'onDragNode',
+			//'node:dblclick' : 'onDblclick'
+		};
+	},
+	onClick(ev) {
+	    //if(ev.item.hasState('selected')){
+			//this.addingEdge = false;
+			//return
+		//}
+		//else{
+			var currentNode = ev.item.getModel();
+			//当前节点
+			const node = ev.item;
+			var model = node.getModel();
+			const graph = this.graph;
+			// 鼠标当前点击的节点的位置
+			const point = {
+				x : ev.x,
+				y : ev.y
+			};
+			//当点击另一个节点时，弹窗。(1.判断是否已经与此表产生了关联，2.获取数据， 3.删除连线 ， 4.弹窗进行关联设置)
+			if (this.addingEdge && this.edge) {
+				let targetId = '';
+				let sjbmc1 = '';
+				let sjbmc2 = '';
+				let source = this.edge._cfg.source.getModel();
+				let sourceId = source.id;
+				//1.判断是否已经与此表产生了关联，有关联的话就不处理
+				//当前节点的连线
+				var edges = node.getEdges();
+				for(var i=0;i<edges.length;i++){
+					if(edges[i].getModel().source == sourceId || edges[i].getModel().target == sourceId){
+						
+						graph.removeItem(this.edge);
+						this.edge = null;
+						this.addingEdge = false;
+						return;
+					}
+					
+				}
+				//2.获取数据
+				
+				//自己连接自己不弹窗
+				if (sourceId == node.getModel().id) {
+					return
+				}
+				var nodes = graph.cfg.nodes;
+				//获取当前节点
+				let target = node.getModel();
+				targetId = target.id;
+				sourceName = source.label;
+				targetName = target.label;
+				
+				
+				//3.删除连线
+				graph.removeItem(this.edge);
+				this.edge = null;
+				this.addingEdge = false;
+				//获取两节点内容信息
+				
+				//4.弹窗进行关联设置
+			    var url = $$pageContextPath + "sjtpController/beforeSave";
+			    $.showModalDialog({url:url,param:{
+			    	sourceId: sourceId,
+			    	targetId: targetId,
+			    	sourceName: sourceName,
+			    	targetName: targetName,
+			    	
+			    }}, "关联设置", returnFun, null, 1200, 300, 0);
+			    
+			} else {
+				
+				
+				
+				 this.edge = graph.addItem('edge', {
+						source : model.id,
+						target : point,
+						//label : '',
+						//style : {
+							//lineWidth : 2,
+							//endArrow : true
+						//}
+					});
+				this.addingEdge = true; 
+				
+			}
+			
+		//}
+		
+	    
+	    ////
+	    
+		
+	},
+	// getEvents 中定义的 mousemove 的响应函数
+	onMousemove(ev) {
+		// 鼠标的当前位置
+		const point = {
+			x : ev.x,
+			y : ev.y
+		};
+		rightId = point;
+		if (this.addingEdge && this.edge) {
+			// 更新边的结束点位置为当前鼠标位置
+			this.graph.updateItem(this.edge, {
+				target : point
+			})
+			graph.get('canvas').set('localRefresh', false);
+		}
+	},
+	//点击连线，即没有点击到其他节点或者点击到画布时，删除该连线
+	onEdgeClick(ev) {
+		const currentEdge = ev.item;
+		// 拖拽过程中，点击会点击到新增的边上
+		if (this.addingEdge && this.edge == currentEdge) {
+			graph.removeItem(this.edge);
+			this.edge = null;
+			this.addingEdge = false;
+
+		}
+	}
+	});
+	////保存成功后生成节点
+	function returnFun(str, argument, isCancel) {
+		
+		if (str != null && str != '') {
+			const newNode = JSON.parse(str);
+			//修改节点
+			if(newNode.sfxg == '1'){
+				const item = graph.findById(newNode.pkid);
+				item.getModel().label = newNode.label;
+				item.getModel().data.sourceField = newNode.sourceField;
+				item.getModel().data.targetField = newNode.targetField;
+				item.getModel().data.jyms = newNode.jyms;
+			}
+			else{
+			////G6中添加连线
+				graph.addItem('edge', {
+					source : newNode.sourceId,
+					target : newNode.targetId,
+					label : newNode.sourceZdms+'='+newNode.targetZdms,
+					style : {
+						lineWidth : 2,
+						//endArrow : true
+					},
+					data:{
+						sourceField: newNode.sourceField,
+			        	targetField: newNode.targetField,
+			        	jyms: newNode.jyms
+					}
+				});
+			}
+			
+		}
+		//graph.paint();
+      	graph.setAutoPaint(true); 
+		
+	}
+
+	//1.声明节点数据
+	const dataValue = {
+	};
+    const toolbar = new G6.ToolBar();
+    //const tc = document.createElement('div');
+    //tc.id = 'toolbarContainer';
+    //document.body.appendChild(tc);
+    //document.getElementById('sfcdl').appendChild(tc);
+    //document.getElementById('test').appendChild(tc);
+	// 2.1实例化 grid 插件
+	const grid = new G6.Grid({
+		//... configurations
+	})
+	const minimap = new G6.Minimap({
+	    size: [150, 100]
+	  });
+	var kk;
+	//G6框架的上下文菜单定位不准确
+	/* const contextMenu = new G6.Menu({
+		  getContent(graph) {
+		    console.log('graph',graph)
+		    return `<ul>
+		      <li title='删除'>删除</li>
+		    </ul>`;
+		  },
+		  handleMenuClick: (target, item) => {
+		    console.log(target, item)
+		  }
+		}); */
+	
+	//节点菜单 conextMenuContainer
+	const conextMenuContainer = document.createElement('ul');
+	conextMenuContainer.id = 'contextMenu';
+	const deleteNode = document.createElement('li');
+	deleteNode.id = 'deleteNode';
+	deleteNode.innerText = '删除节点';
+	conextMenuContainer.appendChild(deleteNode);
+	
+	const highLightSurroundNode = document.createElement('li');
+	highLightSurroundNode.id = 'highLightNode';
+	highLightSurroundNode.innerText = '高亮周围节点';
+	conextMenuContainer.appendChild(highLightSurroundNode);
+	
+	document.getElementById('container').appendChild(conextMenuContainer);
+	
+	//连线菜单 edgeMenuContainer
+	const edgeMenuContainer = document.createElement('ul');
+	edgeMenuContainer.id = 'edgeMenu';
+	const deleteEdge = document.createElement('li');
+	deleteEdge.id = 'deleteEdge';
+	deleteEdge.innerText = '删除连线';
+	edgeMenuContainer.appendChild(deleteEdge);
+	document.getElementById('container').appendChild(edgeMenuContainer);
+	
+	//var hei=$("#container").height();
+	//var wid=$("#container").width();
+	var wid = document.getElementById('container').scrollWidth;
+	var hei = document.getElementById('container').scrollHeight || 600;
+	//alert('宽'+wid+'....高'+hei)
+	var graph = new G6.Graph({
+		container : 'container',
+		width : wid,//1300 wid,
+		height : hei,//700 hei,
+		renderer : 'canvas', //支持canvas和svg
+		plugins: [toolbar, minimap, ], // 配置 Menu 插件 contextMenu, toolbar, minimap, grid
+		// 设置为true，启用 redo & undo 栈功能
+		enabledStack: true,
+		layout: {//布局
+			//center Array [ 0, 0 ] 默认值：图的中心
+		    type: 'force',       //设置布局算法 为force
+		    preventOverlap: true,//设置防止重叠
+		    nodeSpacing: 50 ,//描述: preventOverlap 为 true 时生效, 防止重叠时节点边缘间距的最小值。可以是回调函数, 为不同节点设置不同的最小间距
+		    linkDistance: 300,   //设置边长
+		    alpha: 0.3,//默认0.3  当前的迭代收敛阈值
+		    alphaDecay: 0.0035,//慢 类型：Number 默认值：0.028 是否必须：false 说明：迭代阈值的衰减率。范围 [0, 1]。0.028 对应迭代数为 300
+		    //alphaDecay: 0.06,//快 类型：Number 默认值：0.028 是否必须：false 说明：迭代阈值的衰减率。范围 [0, 1]。0.028 对应迭代数为 300
+		    alphaMin: 0.01,           // 可选 停止迭代的阈值 
+		    forceSimulation: null,    // 可选 自定义 force 方法，若不指定，则使用 d3.js 的方法
+		    onTick: () => {           // 可选 每一次迭代的回调函数
+		      console.log('ticking'); 
+		    },
+		    onLayoutEnd: () => {      // 可选 布局完成后的回调函数
+		      console.log('force layout done');
+		    },
+		    workerEnabled: false,	//默认 false 是否启用 web-worker 以防布局计算时间过长阻塞页面交互
+		},
+		modes : {
+			default: ['drag-canvas','drag-node', 'zoom-canvas','click-add-edge',
+			          //{
+			        	//type: 'click-select',
+			        	/*
+				        	multiple：是否允许多选，默认为 true，当设置为 false，表示不允许多选，此时 trigger 参数无效；
+							trigger：指定按住哪个键进行多选，默认为 shift，按住 Shift 键多选，用户可配置 shift、ctrl、alt；
+							shouldBegin(e)：是否允许该 behavior 发生，参考下面示例；
+							shouldUpdate(e)：是否允许对该 behavior 发生状态响应，参考下面示例。
+			        	*/
+			          //},
+			          
+			          /*////有问题  拖拽节点时，显示提示框的话，再拖拽至提示框内画布会抖动 
+			          {
+				        type: 'tooltip',
+				        formatText: function formatText(model) {
+				          return model.label;
+				        },
+				        offset: 30,
+				        shouldBegin: e => {
+				            // 若当前操作的节点 id 为 'node1'，则不发生 collapse-expand
+				            if (e.item && e.item.getModel().id === 'node1') return false;
+				            return true;
+				          }
+				      },
+				      {
+				        type: 'edge-tooltip',
+				        formatText: function formatText(model, e) {
+				          const edge = e.item;
+				          return (
+				            '来源：' +
+				            edge.getSource().getModel().label +
+				            '<br/>去向：' +
+				            edge.getTarget().getModel().label
+				          );
+				        },
+				        offset: 3
+				      }, */
+			         ],
+		},
+		defaultNode: {//默认节点样式
+			size: 60,
+		    style: {
+			     lineWidth: 0.4,
+			     fill: '#348F37',//节点填充色
+			     //stroke: 'black',//节点的描边颜色
+			     //lineDash: [10,20]	//描边虚线，数组代表实、虚长度
+			     //shadowColor	false	String	阴影颜色
+			     //shadowBlur	false	Number	阴影范围
+			     //shadowOffsetX	false	Number	阴影 x 方向偏移量
+		    	 //shadowOffsetY	false	Number	阴影 y 方向偏移量
+		    	 //opacity	false	Number	设置绘图的当前 alpha 或透明值
+		    	 fillOpacity:100,	//false	Number	设置填充的 alpha 或透明值
+		    	 //cursor	false	String	鼠标在该节点上时的鼠标样式，CSS 的 cursor 选项都支持
+		    },
+		    label: '',        // 标签文字
+		    labelCfg: {           // 标签配置属性
+		      position: 'bottom',// 标签的属性，标签在元素中的位置  'center'，'top'，'left'，'right'，'bottom'。默认为 'top'
+		      style: {            // 包裹标签样式属性的字段 style 与标签其他属性在数据结构上并行
+		        fontSize: 12      // 标签的样式属性，文字字体大小
+		      // ...            // 标签的其他样式属性
+		      }
+		    },
+		},
+		defaultEdge: {//默认连线样式
+			type: 'line',
+			/*
+			line：直线，不支持控制点；
+			polyline：折线，支持多个控制点；
+			arc：圆弧线；
+			quadratic：二阶贝塞尔曲线；
+			cubic：三阶贝塞尔曲线；
+			cubic-vertical：垂直方向的三阶贝塞尔曲线，不考虑用户从外部传入的控制点；
+			cubic-horizontal：水平方向的三阶贝塞尔曲线，不考虑用户从外部传入的控制点；
+			loop：自环。
+			*/
+			style: {
+				 //endArrow : true , //内置箭头 https://g6.antv.vision/zh/docs/manual/middle/elements/edges/arrow
+			     //stroke: '#348F37',   //节点的描边颜色
+			     lineWidth: 1,    //描边宽度
+			     lineAppendWidth: 5,//边响应鼠标事件时的检测宽度，当 lineWidth 太小而不易选中时，可以通过该参数提升击中范围
+			     
+			}
+		},
+		nodeStateStyles : {
+		    highlight: {
+		       opacity: 1,
+	        },
+	        dark: {
+		       opacity: 0.2,
+		    },
+			selected : {//选中样式改变
+				//fill : 'yellow',
+			},
+			hover : {
+				//fill : 'red'
+			},
+			// 鼠标点击节点，即 click 状态为 true 时的样式
+			click : {
+				 stroke: '#000',
+			     lineWidth: 3,
+			},
+			active: {
+	            opacity: 1,
+	       },
+	       inactive: {
+	           opacity: 0.2,
+	       },
+		},
+		edgeStateStyles: {
+	       active: {
+	           stroke: '#999',
+	       },
+	       click: {
+	    	   stroke: 'steelblue',
+	       },
+	       highlight: {
+	    	   stroke: 'red',
+	    	   opacity: 1,
+    	   },
+    	   right-click-highlight: {
+    		   stroke: 'orange',
+	    	   opacity: 1,
+		   },
+    	   
+	   },
+	
+	});
+	/* graph.on('canvas:mouseenter', () => {
+		
+	}); */
+	var forceLayout = graph.get('layoutController').layoutMethod;
+	graph.on('node:dragstart', ev => {
+		//console.log('node:dragstart')
+		
+	    graph.layout();
+        refreshDragedNodePosition(ev);
+        
+        
+		/* var nodes = graph.getNodes();
+		var currentNode = ev.item.getModel();
+		//锁住其他节点
+		for(var i = 0;i<nodes.length;i++){
+			if(currentNode.id != nodes[i].getID()){
+				const node = graph.findById(nodes[i].getID());
+				node.lock();
+			}
+		} */
+		
+		
+	});
+	graph.on('node:drag', ev => {
+		//console.log('node:drag')
+		//clearSlct();
+		////forceLayout.execute();
+	    refreshDragedNodePosition(ev);
+	});
+	graph.on('node:dragend', ev => {
+		//console.log('node:dragend')
+		
+		ev.item.get('model').fx = null;
+        ev.item.get('model').fy = null;
+		/* 
+		var currentNode = ev.item.getModel();
+		var nodes = graph.getNodes();
+		const node = graph.findById(currentNode.id);
+		//设置中心点
+		node.x = ev.canvasX;
+		node.y = ev.canvasY;
+		
+		
+		//解锁所有节点,以当前节点为中心，渲染
+		for(var i = 0;i<nodes.length;i++){
+			const node = graph.findById(nodes[i].getID());
+			node.unlock();
+		} */
+		
+		//重新渲染
+		//graph.render();
+		
+	});
+	
+	//高亮相邻节点
+	graph.on('node:dblclick', function(e) {
+		  const item = e.item;
+		  graph.setAutoPaint(false);
+		  graph.getNodes().forEach(function(node) {
+		    graph.clearItemStates(node);
+		    graph.setItemState(node, 'dark', true);
+		  });
+		  graph.setItemState(item, 'dark', false);
+		  graph.setItemState(item, 'highlight', true);
+		  graph.getEdges().forEach(function(edge) {
+		    if (edge.getSource() === item) {
+		      graph.setItemState(edge.getTarget(), 'dark', false);
+		      graph.setItemState(edge.getTarget(), 'highlight', true);
+		      graph.setItemState(edge, 'highlight', true);
+		      edge.toFront();
+		    } else if (edge.getTarget() === item) {
+		      graph.setItemState(edge.getSource(), 'dark', false);
+		      graph.setItemState(edge.getSource(), 'highlight', true);
+		      graph.setItemState(edge, 'highlight', true);
+		      edge.toFront();
+		    } else {
+		      graph.setItemState(edge, 'highlight', false);
+		    }
+		  });
+		  graph.paint();
+		  graph.setAutoPaint(true);
+		});
+	
+	 graph.on('node:contextmenu', evt => {
+		  evt.preventDefault();
+		  evt.stopPropagation();
+			var canvarTag=document.getElementsByTagName('canvas')[0];
+			var objPos=getPosition(canvarTag)
+			var heis=objPos.left;
+			var tops=objPos.top;
+			var jdId = evt.item.getID();
+			document.getElementById('deleteNode').onclick = function () {
+				$.confirm("提示信息","确认删除该节点吗？",
+					function(){
+						var url = $$pageContextPath + "sjtpController/delete";
+							 $.request({
+					                url : url,
+					                params : {
+					                	jdId: jdId,
+					                },
+					                success : function(response) {
+					                	var successFlag = response.message;
+										if(successFlag == "1") {
+											$.alert("提示信息","删除成功!",function() {
+												console.log('执行删除节点操作....')
+													const item = graph.findById(jdId);
+													
+													//如果是与此节点相连的节点是孤立的节点，也需要将他移除
+													debugger;
+													var itemEdges = item.getEdges();
+													for(var i=0; i<itemEdges.length; i++){
+														if(itemEdges[i].getSource() != jdId){
+															if(itemEdges[i].getSource().getEdges().length == 1){
+																const item2 = graph.findById(itemEdges[i].getSource().getID());
+																graph.remove(item2);
+																continue;
+															}
+														}
+														if(itemEdges[i].getTarget() != jdId){
+															if(itemEdges[i].getTarget().getEdges().length == 1){
+																const item2 = graph.findById(itemEdges[i].getSource().getID());
+																graph.remove(item2);
+																continue;
+															}
+														}
+														
+													}
+													
+													
+													graph.remove(item);
+												
+													//隐藏上下文菜单,防止重复点击
+													conextMenuContainer.style.left = '-150px';
+												});
+										} else {
+											$.alert("提示信息","删除失败，请稍后重试");
+										}					                	
+					    				
+					                }
+					            });
+			                
+							
+					},
+					function(){
+					}
+				);
+				
+	        };
+	        
+			document.getElementById('highLightNode').onclick = function () {
+				
+				 const item = evt.item;
+				  graph.setAutoPaint(false);
+				  
+				  graph.getNodes().forEach(function(node) {
+				    graph.clearItemStates(node);
+				    graph.setItemState(node, 'dark', true);
+				  });
+				  graph.setItemState(item, 'dark', false);
+				  graph.setItemState(item, 'highlight', true);
+				  graph.getEdges().forEach(function(edge) {
+				    if (edge.getSource() === item) {
+				      graph.setItemState(edge.getTarget(), 'dark', false);
+				      graph.setItemState(edge.getTarget(), 'highlight', true);
+				      graph.setItemState(edge, 'highlight', true);
+				      edge.toFront();
+				    } else if (edge.getTarget() === item) {
+				      graph.setItemState(edge.getSource(), 'dark', false);
+				      graph.setItemState(edge.getSource(), 'highlight', true);
+				      graph.setItemState(edge, 'highlight', true);
+				      edge.toFront();
+				    } else {
+				      graph.setItemState(edge, 'highlight', false);
+				    }
+				  });
+				  graph.paint();
+				  graph.setAutoPaint(true);
+				
+				
+				
+	        };
+	        
+	        
+			//
+			
+			conextMenuContainer.style.left = evt.target.cfg.canvasBox.x+heis+30+ 'px';
+			conextMenuContainer.style.top = evt.target.cfg.canvasBox.y+tops+30-document.body.scrollTop+ 'px';
+			
+	});
+	 
+	 
+	 graph.on('edge:contextmenu', evt => {
+		 debugger;
+		  evt.preventDefault();
+		  evt.stopPropagation();
+			var canvarTag=document.getElementsByTagName('canvas')[0];
+			var objPos=getPosition(canvarTag)
+			var heis=objPos.left;
+			var tops=objPos.top;
+			var pkid = evt.item.getID();
+			document.getElementById('deleteEdge').onclick = function () {
+				$.confirm("提示信息","确认删除该关联关系吗？",
+					function(){
+						var url = $$pageContextPath + "sjtpController/deleteRelationship";
+							 $.request({
+					                url : url,
+					                params : {
+					                	pkid: pkid,
+					                },
+					                success : function(response) {
+					                	var successFlag = response.message;
+										if(successFlag == "1") {
+											$.alert("提示信息","删除成功!",function() {
+												console.log('执行删除连线操作....')
+													const item = graph.findById(pkid);
+													//连线左右两侧的节点，如果是孤点，也将其移除
+													debugger;
+													var itemLeft = [];
+													var itemRight = [];
+													const itemSource = item.getSource();
+													if(itemSource.getEdges().length == 1){
+														itemLeft = graph.findById(itemSource.getID());
+													}
+													
+													const itemTarget = item.getTarget();
+													if(itemTarget.getEdges().length == 1){
+														itemRight = graph.findById(itemTarget.getID());
+													}
+													
+													if(!isEmpty(itemLeft)){
+														graph.remove(itemLeft);
+													}
+													if(!isEmpty(itemRight)){
+														graph.remove(itemRight);
+													}
+													
+													if(isEmpty(itemLeft) && isEmpty(itemRight)){
+														graph.remove(item);
+													}
+													
+													
+												
+													//隐藏上下文菜单,防止重复点击
+													edgeMenuContainer.style.left = '-150px';
+												});
+										} else {
+											$.alert("提示信息","删除失败，请稍后重试");
+										}					                	
+					    				
+					                }
+					            });
+			                
+							
+					},
+					function(){
+					}
+				);
+				
+	        };
+	        
+			edgeMenuContainer.style.left = evt.target.cfg.canvasBox.x+heis+30+ 'px';
+			edgeMenuContainer.style.top = evt.target.cfg.canvasBox.y+tops+30-document.body.scrollTop+ 'px';
+			
+	});
+	 
+	 
+	function refreshDragedNodePosition(e) {
+		  const model = e.item.get('model');
+		  model.fx = e.x;
+		  model.fy = e.y;
+	}
+	function getPosition(obj){
+	    var l=0;
+	    var t=0;
+	    while(obj){
+	        l+=obj.offsetLeft;
+	        t+=obj.offsetTop;
+	        obj=obj.offsetParent;
+	    }
+	    return {left:l, top:t};
+	}
+	// 当 click-select 选中的元素集合发生变化时将会触发下面时机事件，e 中包含相关信息
+	graph.on('nodeselectchange', e => {
+		
+	  // 当前操作的 item
+	  //console.log(e.target);
+	  // 当前操作后，所有被选中的 items 集合
+	  //console.log(e.selectedItems);
+	  // 当前操作时选中(true)还是取消选中(false)
+	  //console.log(e.select);
+	  
+	});
+	
+
+	//graph.on('node:mouseenter', function(e) {
+	//});
+	//graph.on('node:mouseleave', clearAllStats);
+	//双击节点，高亮展示相关联的节点
+	graph.on('edge:dblclick', ev => {
+		var edge = ev.item.getModel();
+		var sourceId = ev.item.getModel().source;
+		var targetId = ev.item.getModel().target;
+		var sourceName = graph.findById(sourceId).getModel().label;
+		var targetName = graph.findById(targetId).getModel().label;
+		var pkid = edge.id;
+		
+		var sourceField = edge.data.sourceField;
+		var targetField = edge.data.targetField;
+		var jyms =  edge.data.jyms;
+		//1.获取下拉框,2.默认选中
+		var url = $$pageContextPath + "sjtpController/beforeSave";
+      	graph.setAutoPaint(false);
+		
+	    $.showModalDialog({url:url,param:{
+	    	sourceId: sourceId,
+	    	targetId: targetId,
+	    	sourceName: sourceName,
+	    	targetName: targetName,
+	    	sourceField: sourceField,
+	    	targetField: targetField,
+	    	jyms: jyms,
+	    	pkid: pkid,
+	    	sfxg: '1',//是否修改 1是  0否
+	    }}, "关联设置", returnFun, null, 1200, 300, 0); 
+		
+	});
+	//点击画布，清除选中
+	graph.on('canvas:click', () => {
+		//清除选中
+		clearAllStats();
+		//隐藏上下文菜单
+		conextMenuContainer.style.left = '-150px';
+		edgeMenuContainer.style.left = '-150px';
+	});
+	
+	
+	graph.on('canvas:dragstart', ev => {
+	});
+	graph.on('canvas:dragend', ev => {
+	});
+	graph.on('canvas:drag', ev => {
+	});
+	graph.on('canvas:mousemove', ev => {
+		canvasX = ev.x;
+		canvasY = ev.y;
+	});
+	graph.on('canvas:dblclick', ev => {
+	});
+	//清除选中
+	function clearAllStats() {
+	  graph.setAutoPaint(false);
+	  graph.getNodes().forEach(function(node) {
+	    graph.clearItemStates(node);
+	  });
+	  graph.getEdges().forEach(function(edge) {
+	    graph.clearItemStates(edge);
+	  });
+	  graph.paint();
+	  graph.setAutoPaint(true);
+	}
+	
+	//获取数据并渲染
+	var dataStr = response.getParameter("data");
+	var data = JSON.parse(dataStr);
+	var context_path = getRootPath();
+	function getRootPath() {  
+	    var pathName = window.location.pathname.substring(1);  
+	    var webName = pathName == '' ? '' : pathName.substring(0, pathName.indexOf('/'));  
+	    return window.location.protocol + '//' + window.location.host + '/' + webName + '/';  
+	}
+	for(var i=0;i<data.nodes.length;i++){
+		data.nodes[i].type = "image";
+		data.nodes[i].img = context_path+'images/mxzx/小图标/地址转经纬度.png';
+		data.nodes[i].size = 30;
+     	data.nodes[i].style = {
+     		fill: 'green'
+      	}
+     	if(i<4){
+     		data.nodes[i].size = 20;
+         	data.nodes[i].style = {
+         		fill: 'blue'
+          	}
+         	data.nodes[i].img = context_path+'images/sjzyglzx/sjtp/环形饼图.png';
+     	}
+     	else if(i<8){
+     		data.nodes[i].size = 20;
+         	data.nodes[i].style = {
+         		fill: 'red'
+          	}
+         	data.nodes[i].img = context_path+'images/sjzyglzx/sjtp/环保.png';
+     	}
+     	else if(i<12){
+     		data.nodes[i].size = 40;
+         	data.nodes[i].style = {
+         		fill: '#A67B28'
+          	}
+         	data.nodes[i].img = context_path+'images/sjzyglzx/sjtp/人.png';
+     	}
+     	else{
+     		data.nodes[i].size = 25;
+         	data.nodes[i].style = {
+         		fill: '#058CA4'
+          	}
+         	data.nodes[i].img = context_path+'images/sjzyglzx/sjtp/智慧环保.png'
+     	}
+     	
+     	
+     	if(data.nodes[i].label == '小区信息'){
+     		data.nodes[i].size = 70;
+         	data.nodes[i].style = {
+         		fill: 'blue',
+          	}
+         	data.nodes[i].img = context_path+'images/sjzyglzx/sjtp/小区.png';
+     	}
+     		
+   	}
+	
+	/* for(var i=0;i<data.edges.length;i++){
+     	if(i<4){
+     		data.edges[i].style = {
+        		     stroke: '#348F37',   //节点的描边颜色
+        		     lineWidth: 1,    //描边宽度
+        		     lineAppendWidth: 5,
+         	}
+     	}
+     	else if(i<9){
+     		data.edges[i].style = {
+        		     stroke: '#058CA4',   //节点的描边颜色
+        		     lineWidth: 1,    //描边宽度
+        		     lineAppendWidth: 5,
+         	}
+     	}
+     	else{
+     		data.edges[i].style = {
+        		     stroke: '#A67B28',   //节点的描边颜色
+        		     lineWidth: 1,    //描边宽度
+        		     lineAppendWidth: 5,
+         	}
+     	}
+     	
+   	} */
+	
+	
+	if(isEmpty(data)){
+		graph.data(dataValue);
+	}
+	else{
+		graph.data(data);
+	}
+	
+	graph.render();
+	
+	
+	
+	
+	function isEmpty(obj){
+	    if(typeof obj == "undefined" || obj == null || obj == ""){
+	        return true;
+	    }else{
+	        return false;
+	    }
+	}
+	
+	function getRelationship(zybId){
+		var url = $$pageContextPath + "sjtpController/getRelationship";
+        $.request({
+            url : url,
+            params : {
+            	zybId: zybId,
+            },
+            success : function(response) {
+            	var dataStr = response.parameters.data;
+            	var data = JSON.parse(dataStr);
+            	 for(var i=0;i<data.edges.length;i++){
+            		data.edges[i].style = {
+  		        	  lineWidth : 2,
+  					  //endArrow : true ,
+  				      stroke: 'red',
+  				      lineWidth: 3,
+  				      lineAppendWidth: 5,
+  		          }
+            		
+            	}
+				for(var i=0;i<data.nodes.length;i++){
+            		
+					//data.nodes[i].size = 100;
+            		data.nodes[i].style = {
+            				
+  		         	 }
+            	}
+				
+				
+            	graph.data(data);
+				graph.render();
+				/*
+				
+				for(var i=0;i<data.nodes.length;i++){
+					
+					let id = data.nodes[i].id;
+					let label = data.nodes[i].label;
+					
+					graph.addItem('node', {
+						id : id,
+						size : 66,
+						label : label,
+						labelCfg : {
+							position : 'bottom',
+							offset : 5
+						},
+						//anchorPoints: [[0, 0.5], [0.5, 0],[1,0.5],[0.5,1]],
+					});
+					
+            	}
+				
+            	for(var i=0;i<data.edges.length;i++){
+            		
+            		let source = data.edges[i].source;
+					let target = data.edges[i].target;
+					let label = data.edges[i].label;
+					
+					graph.addItem('edge', {
+						source : source,
+						target : target,
+						label : label,
+						style : {
+							lineWidth : 2,
+							endArrow : true
+						}
+					});
+					
+            		
+            	}
+            	*/
+            	
+				
+            }
+        });
+	}
+	//清除选中文本
+	var clearSlct= "getSelection" in window ? function(){
+		 window.getSelection().removeAllRanges();
+		} : function(){
+		 document.selection.empty();
+		};
+	function CreateModel(ui, selector, conn, str) {
+		var wid = $("#zctd").outerWidth(true);
+		//获取界面最左侧的宽度(包含内边距、外边距和边框)
+		var heig = $("#sfcdl").outerHeight(true);
+		//获取右侧界面上方按钮的高度(包含内边距、外边距和边框)
+		//默认物理表
+		var leftParentJdid = "";
+		//左侧上级节点
+		var rightParentJdid = "";
+		//右侧上级节点
+		var jdWlb2gzbId = ui.draggable.context.lastChild.defaultValue;
+		var zybMc = ui.draggable.context.innerText;
+		var sjylx=ui.draggable.context.lastChild.getAttribute('sjylx');
+		var left = parseInt(canvasX);
+		var top = parseInt(canvasY);
+		//var id = jdWlb2gzbId+ (modelCounter * 10 + 10);
+		var id = jdWlb2gzbId;
+		var jdId="";
+		//判断是否是拖拽新增还是程序自动新增，用于判断监听连接事件
+		if (ui == "" || ui == "undefined" || ui == undefined) {
+			sfAddNode = true;
+		} else {
+			sfAddNode = false;
+		}
+		var imgUrl="";
+		 if(sjylx == '1'){
+			 imgUrl = context_path+'images/sjzyglzx/jdbc-mx.png' ;
+		}
+		//流式
+		else if(sjylx == '2'){
+			imgUrl = context_path + 'images/sjzyglzx/kafka-mx.png' ;
+		}
+		//内存
+		else if(sjylx == '3'){
+			imgUrl= context_path + 'images/sjzyglzx/memoryDb-mx.png' ;
+		}
+		//其他
+		else{
+			imgUrl = context_path + 'images/sjzyglzx/excel-mx.png' ;
+		}
+		const node = graph.addItem('node', {
+			x : left,
+			y : top,
+			id : id,
+			size : 33,
+			type: 'image',
+			img : imgUrl,
+			label : zybMc,
+			labelCfg : {
+				position : 'bottom',
+				offset : 5
+			},
+			//锚点位置    左上角为0，0 往右x和往下y增加 范围0-1
+			//anchorPoints: [[0, 0.5], [0.5, 0],[1,0.5],[0.5,1]],
+			data : {
+				sfxz : '1',
+			},
+		});
+
+		//左上右下，右节点非空说明为双父节点，添加与原节点的连线
+		if (rightParentJdid != '') {
+			graph.addItem('edge', {
+				source : rightParentJdid,
+				target : id,
+				label : '',
+				style : {
+					lineWidth : 2,
+					//endArrow : true
+				}
+			});
+
+			graph.addItem('edge', {
+				source : leftParentJdid,
+				target : id,
+				label : '',
+				style : {
+					lineWidth : 2,
+					//endArrow : true
+				}
+			});
+			endPointNum++;
+		} else {
+			if (str != null && str != '') {
+				graph.addItem('edge', {
+					source : leftParentJdid,
+					target : id,
+					label : '',
+					style : {
+						lineWidth : 2,
+						//endArrow : true
+					}
+				});
+			}
+			endPointNum++;
+		}
+		modelCounter++;
+	}
+	
+	$(function(){
+		//禁止浏览器右键的下拉菜单（jsp不需要，html需要）
+	 	/*document.oncontextmenu = function (event) {
+	 		event.preventDefault();
+		};*/ 
+		$("#container").droppable({
+			scope:"plant",
+			drop:function(event,ui){
+				CreateModel(ui,$(this),event);
+			}
+		});
+	})
+	    var setting = {
+		view: {
+			selectedMulti: true,
+			fontCss: setFontCss,
+			addDiyDom: addDiyDom
+		},callback: {
+			onDrag: zTreeOnDrag,
+			beforeDrag: zTreeBeforeDrag,
+			onDrop: zTreeOnDrop,
+			beforeDrop: zTreeBeforeDrop,
+		},data: {
+	            	simpleData: {
+	                enable: true,
+	                idKey: "id",
+					pIdKey: "pId",
+					rootPId: 0
+				}
+		},edit: {
+			enable: true,
+			showRemoveBtn: false,
+			showRenameBtn: false,
+			drag: {
+				isCopy: true,
+				isMove: true,
+			}
+		}
+		};
+	function isEmpty(obj){
+	    if(typeof obj == "undefined" || obj == null || obj == ""){
+	        return true;
+	    }else{
+	        return false;
+	    }
+	}
+	function setFontCss (treeId, treeNode) {
+	}
+	function zTreeOnDrag(event, treeId, treeNodes) {
+	};
+	function zTreeBeforeDrag(treeId, treeNodes) {
+	};
+	function zTreeOnDrop(event, treeId, treeNodes, targetNode, moveType){
+	}
+	function zTreeBeforeDrop(treeId, treeNodes, targetNode, moveType) {
+	};
+	function addDiyDom(treeId, treeNode){
+		//区分是否为资源目录，带有级别jb的为主题
+		if(!isEmpty(treeNode.jb)){
+			return
+		}
+		var aObj = $("#" + treeNode.tId + "_a");
+		var editStr = "<input type='hidden' value='"+treeNode.id+"' sjylx='"+treeNode.sjylx+"' zybid='"+treeNode.code+"' style='display:none'>";
+		aObj.append(editStr);
+ 		//资源目录可进行拖拽生成节点
+		aObj.draggable({
+			  	helper:"clone",
+			  	scope:"plant"
+		});
+	}
+	function calculate(){
+		//获取主题节点，计算该节点下所有资源目录的数目
+    	var nodes = zTreeObj.getNodes();
+    	var ztNodes = nodes[0].children;//资源主题的子节点
+    	for(var i=0;i<ztNodes.length;i++){//获取每个主题下所有的资源目录
+    		//可能会存在多个级别，根据级别为不为空判断是不是主题。
+    		var ztZymlNum = 0;
+    		if(isEmpty(ztNodes[i].jb)){
+    			ztZymlNum ++ ;
+    		}
+    		//级别不是空，判断是否有子节点
+    		else if(!isEmpty(ztNodes[i].children)){
+    			ztZymlNum = ztZymlNum + calculateChildNodes(ztNodes[i].children)
+    			ztNodes[i].ztZymlNum = ztZymlNum;
+        		ztNodes[i].nameBak = ztNodes[i].name;
+        		if(ztZymlNum!=0){
+        			ztNodes[i].name = ztNodes[i].nameBak + '('+ztZymlNum+')';
+            		zTreeObj.updateNode(ztNodes[i]);
+        		}
+    		}
+    		
+    	}
+	}
+	function calculateChildNodes(obj){
+		var ztZymlNum = 0;
+		if(obj.length>0){
+			for(var j=0;j<obj.length;j++){
+				if(isEmpty(obj[j].jb)){
+					ztZymlNum ++ ;
+				}
+				else if(!isEmpty(obj[j].children)){
+					const ztZymlNumm = calculateChildNodes(obj[j].children);
+					ztZymlNum = ztZymlNum + ztZymlNumm;
+					obj[j].ztZymlNum = ztZymlNum;
+	        		obj[j].nameBak = obj[j].name;
+	        		if(ztZymlNum!=0){
+	        			obj[j].name = obj[j].nameBak + '('+ztZymlNumm+')';
+	            		zTreeObj.updateNode(obj[j]);
+	        		}
+				}
+			}
+		}
+		return ztZymlNum;
+	}
+	function getRootPath() {  
+	    var pathName = window.location.pathname.substring(1);  
+	    var webName = pathName == '' ? '' : pathName.substring(0, pathName.indexOf('/'));  
+	    return window.location.protocol + '//' + window.location.host + '/' + webName + '/';  
+	}
+	//js生成uuid
+	function gUuid() {
+		return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+			var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+			return v.toString(16);
+		});
+	}
+	
+	//在G6的ToolBar基础上添加查询按钮
+	const search = document.createElement('li');
+	search.id = 'search';
+	
+	search.innerHTML = "<div class=\"searchNodeDiv\">"+
+		"			<a href=\"javascript:void(0);\" class=\"searchNodeA\"><img  border=\"0\" class=\"searchNodeImg\" src=\""+context_path+"images/sjzyglzx/sjtp/search.png\" /></a>"+
+		"			<input class=\"searchNodeInput\" type=\"text\" placeholder=\"请输入资源名称\" >"+
+		"	</div>";
+	document.getElementsByClassName('g6-component-toolbar')[0].appendChild(search)
+	
+	//记录查询的节点,右键高亮，或者双击高亮时，这个也展示出来
+	var nodeBak = [];
+	$('.searchNodeInput').bind('keypress',function(event){  
+    if(event.keyCode == "13"){
+    	
+    	clearAllStats();
+    	
+    	var nodeName = $('.searchNodeInput')[0].value;
+    	
+   		 if(nodeName == ''){
+   			clearAllStats();
+	        //$.alert("提示信息!","请输入查询内容!")
+	 		    return;
+	     }
+	    //获取选中节点
+	    var selectedNodes = graph.getNodes().filter((item,i)=>{
+	      		
+	         //if(item.getModel().label == nodeName){
+	         //升级为模糊查询节点名称和资源标签
+	         if(item.getModel().label.indexOf(nodeName) != -1){
+	             return item;
+	         }
+	     })
+          
+		    //高亮节点
+		   if(selectedNodes.length > 0){
+			   
+		    	graph.setAutoPaint(false);
+ 	      	//全部节点置灰色
+ 	      	graph.getNodes().forEach(function(node) {
+ 	      	    graph.clearItemStates(node);//清除元素状态，可以一次性清除多个状态。
+ 	      	    graph.setItemState(node, 'dark', true);
+ 	      	});
+ 	      	
+ 	     	/* const id = selectedNodes[0].getID();
+ 	      	const item = graph.findById(id);
+ 	        graph.setItemState(item, 'dark', false);
+ 	      	graph.setItemState(item, 'highlight', true);
+ 	      	graph.getEdges().forEach(function(edge) {
+ 		      	if (edge.getSource() === item) {
+ 		      	    graph.setItemState(edge.getTarget(), 'dark', false);
+ 		      	    graph.setItemState(edge.getTarget(), 'highlight', true);
+ 		      	    graph.setItemState(edge, 'highlight', true);
+ 		      	    edge.toFront();
+ 		      	} else if (edge.getTarget() === item) {
+ 		      	    graph.setItemState(edge.getSource(), 'dark', false);
+ 		            graph.setItemState(edge.getSource(), 'highlight', true);
+ 		            graph.setItemState(edge, 'highlight', true);
+ 		     	    edge.toFront();
+ 		      	} else {
+ 		      	    graph.setItemState(edge, 'highlight', false);
+ 		        }
+ 	      	}); */
+  	      	
+ 	      	for(var i=0;i<selectedNodes.length;i++){
+ 	      		const id = selectedNodes[i].getID();
+ 	 	      	const item = graph.findById(id);
+ 	 	        graph.setItemState(item, 'dark', false);
+ 	 	      	graph.setItemState(item, 'highlight', true);
+ 	 	        graph.getEdges().forEach(function(edge) {
+ 	 		      	if (edge.getSource() === item) {
+ 	 		      	    graph.setItemState(edge.getTarget(), 'dark', false);
+ 	 		      	    graph.setItemState(edge.getTarget(), 'highlight', true);
+ 	 		      	    graph.setItemState(edge, 'highlight', true);
+ 	 		      	    edge.toFront();
+ 	 		      	} else if (edge.getTarget() === item) {
+ 	 		      	    graph.setItemState(edge.getSource(), 'dark', false);
+ 	 		            graph.setItemState(edge.getSource(), 'highlight', true);
+ 	 		            graph.setItemState(edge, 'highlight', true);
+ 	 		     	    edge.toFront();
+ 	 		      	} else {
+ 	 		      	    //graph.setItemState(edge, 'highlight', false);
+ 	 		      	    //如果已经
+ 	 		      		const states = item.getStates();
+ 	 		      		debugger;
+ 	 		      		
+ 	 		        }
+ 	 	      	});
+ 	      	}
+ 	      	
+  	      	
+  	      	
+  	      	graph.paint();
+  	      	graph.setAutoPaint(true); 
+          	
+  	      	//将查询高亮的连线记录下来，右键高亮时，查询的一起高亮
+  	      	
+  	      	
+  	      	
+  	      	
+          }
+    	  
+
+       }  
+
+   });  
+	
+	//监听G6的撤销和回退,撤销和回退时要影响数据库
+	$("li[code$='undo']").click(function(){
+		alert('撤销了')
+	})
+	
+	
+	$("li[code$='redo']").click(function(){
+		alert('回退了')
+	})
+	
+	
+</script>
+	<style>
+/* ToolBar组件加载后再重新定位 */
+.g6-component-toolbar {
+	left: 20%;
+	top: 0%; /* 7% */
+}
+
+.g6-minimap-container {
+	border: 1px solid #e2e2e2;
+}
+
+.g6-minimap-viewport {
+	border: 2px solid rgb(25, 128, 255);
+}
+
+.g6-minimap {
+	position: relative;
+	bottom: 100px;
+}
+
+.g6-tooltip {
+	border: 1px solid #e2e2e2;
+	border-radius: 4px;
+	font-size: 12px;
+	color: #000;
+	background-color: rgba(255, 255, 255, 0.9);
+	padding: 10px 8px;
+	box-shadow: rgb(174, 174, 174) 0px 0px 10px;
+}
+
+/* 上下文菜单样式 */
+.g6-component-contextmenu {
+	
+}
+
+#contextMenu, #edgeMenu {
+	position: absolute;
+	list-style-type: none;
+	padding: 10px 8px;
+	left: -150px;
+	background-color: rgba(255, 255, 255, 0.9);
+	border: 1px solid #e2e2e2;
+	border-radius: 4px;
+	font-size: 12px;
+	color: #545454;
+	border: 1px solid #e2e2e2;
+	box-shadow: rgb(174, 174, 174) 0px 0px 10px;
+}
+
+#contextMenu li, #edgeMenu li {
+	cursor: pointer;
+	list-style-type: none;
+	list-style: none;
+	margin-left: 0px;
+}
+
+#contextMenu li:hover {
+	color: #aaa;
+}
+</style>
+</body>
+</html>

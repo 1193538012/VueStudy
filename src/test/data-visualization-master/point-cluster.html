@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>地震点聚集</title>
+    <link rel="stylesheet" href="./css/ol.css">
+    <script src="./js/ol.js"></script>
+</head>
+<body>
+	<button onclick="changeCenter()">点击定位</button>
+    <div id="map"></div>
+    <script>
+		
+		function changeCenter(){
+			//更换地图中心
+			var t = map.getView()
+			t.setCenter(ol.proj.fromLonLat([117.139263,36.676876]))
+			//图片变大
+			
+			
+			features[0].setStyle(
+			new ol.style.Style({
+				image: new ol.style.Icon({
+					anchor: [0.5, 0.5],
+					crossOrigin: 'anonymous',
+					src: 'http://127.0.0.1:8088/sdzysfxt/ucp/sdzysfxt/skfx/images/人轨迹定位（选中）.png',
+				})
+			})
+			)
+			
+			features[0].changed();	
+						
+		}
+		
+		debugger;
+        // 初始化聚集要素的半径
+        // 可自由定义要素半径的计算规则
+        let maxFeatureCount;
+        let earthquakeCluster = null;
+        let calculateClusterInfo = (resolution) => {
+            maxFeatureCount = 0;
+            let features = earthquakeCluster.getSource().getFeatures();
+            let feature, radius;
+            for (let i = features.length - 1; i >= 0; i--) {
+                feature = features[i];
+                let originalFeatures = feature.get('features');
+                let extent = ol.extent.createEmpty();
+                let j = (void 0), jj = (void 0);
+                for (let j = 0, jj = originalFeatures.length; j<jj; ++j) {
+                    ol.extent.extend(extent, originalFeatures[j].getGeometry().getExtent());
+                }
+                maxFeatureCount = Math.max(maxFeatureCount, jj);
+                radius = 0.15 * (ol.extent.getWidth(extent) + ol.extent.getHeight(extent)) / resolution;
+                feature.set('radius', radius);
+            }
+        }
+
+        // 样式函数，对每个feature返回一个样式
+        let currentResolution;
+        let styleFunction = (feature, resolution) => {
+            if (resolution != currentResolution) {
+                calculateClusterInfo(resolution);
+                currentResolution = resolution;
+            }
+            let style;
+            let size = feature.get('features').length;
+            if (size > 1) {
+                style = new ol.style.Style({
+                    image: new ol.style.Circle({
+                        radius: feature.get('radius'),
+                        fill: new ol.style.Fill({
+                            color: [255, 153, 0]//橙黄色
+                        })
+                    }),
+                    text: new ol.style.Text({
+                        text: size.toString(),
+                        fill: new ol.style.Fill({
+                            color: '#fff'
+                        }),
+                        stroke: new ol.style.Stroke({
+                            color: 'rgba(0, 0, 0, 0.6)',//接近黑色
+                            width: 3
+                        })
+                    })
+                })
+            } else {
+                // 每个地震点的默认样式
+                style = new ol.style.Style({
+                    /*image: new ol.style.Circle({
+                        radius: 3,
+                        fill: new ol.style.Fill({
+                            color: 'rgb(255, 0, 0)'//红色
+                        })
+                    })*/
+					image: new ol.style.Icon({
+						anchor: [0.5, 0.5],
+						src: 'http://127.0.0.1:8088/sdzysfxt/ucp/sdzysfxt/skfx/images/人轨迹定位.png',
+                        size: [100,200]
+					})
+                });
+            }
+            return style;
+        }
+		// 模拟后台数据
+		var trackData = [
+			{
+				"lon":117.191652,//山东建筑大学
+				"lat":36.688047,
+				"name":"山东建筑大学",
+				"sfzh":'37152219970111001X'
+			},
+			{
+				"lon":117.100528,//小狸猫山
+				"lat":36.621803,
+				"name":"小狸猫山",
+			},
+			{
+				"lon":117.10254,//山东博物馆
+				"lat":36.666281,
+				"name":"山东博物馆",
+			},
+			{
+				"lon":117.139263,//齐鲁软件园
+				"lat":36.676876,
+				"name":"齐鲁软件园",
+			}
+		]
+		// 遍历得到点的集合
+		var features = []
+		for(var i=0;i<trackData.length;i++){
+			// 将点转换成地图识别的格式
+			var coordinate = ol.proj.transform([trackData[i].lon,trackData[i].lat],'EPSG:4326','EPSG:3857')
+			features[i] = new ol.Feature({
+				geometry: new ol.geom.Point(coordinate),
+			})
+		}
+
+        // 聚类图层
+        earthquakeCluster = new ol.layer.Vector({
+            source: new ol.source.Cluster({
+                distance: 80,   // 聚类阈值，当两点间距离小于20，便聚类为一个点
+                source: new ol.source.Vector({
+                    //format: new ol.format.GeoJSON(),
+                    //url: 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.geojson'
+					features : features
+                })
+            }),
+            style: styleFunction
+        });
+
+		//地图设置中心，设置到成都，在本地离线地图offlineMapTiles刚好有一张zoom为4的成都瓦片
+        var center = ol.proj.transform([117.122662,36.662344], 'EPSG:4326', 'EPSG:3857');
+
+        var map = new ol.Map({
+            target: 'map',
+            layers: [
+                new ol.layer.Tile({
+                    source: new ol.source.OSM()
+                })
+            ],
+            view: new ol.View({
+                //center: ol.proj.fromLonLat([118, 36]),
+				center: center,
+				zoom: 12,
+                minZoom: 4,//缩小级别
+                maxZoom: 15//放大级别
+            })
+        });
+        map.addLayer(earthquakeCluster)
+    </script>
+</body>
+</html>

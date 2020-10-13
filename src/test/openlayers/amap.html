@@ -1,0 +1,476 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="./css/ol.css" type="text/css">
+    <style>
+      .map {
+        height: 900px;
+        width: 100%;
+      }
+      .tool-wrapper {
+        position: absolute;
+        right: 20px;
+        bottom: 50px;
+        z-index: 9;
+        background-color: white;
+        padding: 8px 12px;
+    }
+    </style>
+    <script src="./js/jquery-1.11.3.js" type="text/javascript"></script>
+    <script src="./js/ol.js" type="text/javascript"></script>
+    <title>OpenLayers example</title>
+  </head>
+  <body>
+    
+    <ul>
+      <li>----------------------功能测试--------------------------</li>
+            <li><a href="javascript:;" onclick="sadian()">撒点</a></li>
+            <li><a href="javascript:;" onclick="addIcon([117.024967066,36.6827847272],'测试新增图标')">添加图标</a></li>
+    		<li><a href="javascript:;" onclick="huifang()">轨迹回放</a></li>
+    		<li><a href="javascript:;" onclick="quanping()">全屏</a></li>
+    		<li><a href="javascript:;" onclick="jvji()">地震点聚集</a></li>
+    		<li><a href="javascript:;" onclick="yyxg()">撒点并实现阴影效果</a></li>
+    </ul>
+    <div id="map">
+        <div class="tool-wrapper">
+            <label for="speed">
+                speed:&nbsp;
+                <input id="speed" type="range" min="10" max="999" step="10" value="60">
+            </label>
+            <button id="start-animation">Start Animation</button>
+        </div>
+
+    </div>
+    <script>
+
+var vectorLayer = [];
+var vectorSource = [];
+
+var polyline = [
+            'hldhx@lnau`BCG_EaC??cFjAwDjF??uBlKMd@}@z@??aC^yk@z_@se@b[wFdE??wFfE}N',
+            'fIoGxB_I\\gG}@eHoCyTmPqGaBaHOoD\\??yVrGotA|N??o[N_STiwAtEmHGeHcAkiA}^',
+            'aMyBiHOkFNoI`CcVvM??gG^gF_@iJwC??eCcA]OoL}DwFyCaCgCcCwDcGwHsSoX??wI_E',
+            'kUFmq@hBiOqBgTwS??iYse@gYq\\cp@ce@{vA}s@csJqaE}{@iRaqE{lBeRoIwd@_T{]_',
+            'Ngn@{PmhEwaA{SeF_u@kQuyAw]wQeEgtAsZ}LiCarAkVwI}D??_}RcjEinPspDwSqCgs@',
+            'sPua@_OkXaMeT_Nwk@ob@gV}TiYs[uTwXoNmT{Uyb@wNg]{Nqa@oDgNeJu_@_G}YsFw]k',
+            'DuZyDmm@i_@uyIJe~@jCg|@nGiv@zUi_BfNqaAvIow@dEed@dCcf@r@qz@Egs@{Acu@mC',
+            'um@yIey@gGig@cK_m@aSku@qRil@we@{mAeTej@}Tkz@cLgr@aHko@qOmcEaJw~C{w@ka',
+            'i@qBchBq@kmBS{kDnBscBnFu_Dbc@_~QHeU`IuyDrC_}@bByp@fCyoA?qMbD}{AIkeAgB',
+            'k_A_A{UsDke@gFej@qH{o@qGgb@qH{`@mMgm@uQus@kL{_@yOmd@ymBgwE}x@ouBwtA__',
+            'DuhEgaKuWct@gp@cnBii@mlBa_@}|Asj@qrCg^eaC}L{dAaJ_aAiOyjByH{nAuYu`GsAw',
+            'Xyn@ywMyOyqD{_@cfIcDe}@y@aeBJmwA`CkiAbFkhBlTgdDdPyiB`W}xDnSa}DbJyhCrX',
+            'itAhT}x@bE}Z_@qW_Kwv@qKaaAiBgXvIm}A~JovAxCqW~WanB`XewBbK{_A`K}fBvAmi@',
+            'xBycBeCauBoF}}@qJioAww@gjHaPopA_NurAyJku@uGmi@cDs[eRaiBkQstAsQkcByNma',
+            'CsK_uBcJgbEw@gkB_@ypEqDoqSm@eZcDwjBoGw`BoMegBaU_`Ce_@_uBqb@ytBwkFqiT_',
+            'fAqfEwe@mfCka@_eC_UmlB}MmaBeWkkDeHwqAoX}~DcBsZmLcxBqOwqE_DkyAuJmrJ\\o',
+            '~CfIewG|YibQxBssB?es@qGciA}RorAoVajA_nAodD{[y`AgPqp@mKwr@ms@umEaW{dAm',
+            'b@umAw|@ojBwzDaaJsmBwbEgdCsrFqhAihDquAi`Fux@}_Dui@_eB_u@guCuyAuiHukA_',
+            'lKszAu|OmaA{wKm}@clHs_A_rEahCssKo\\sgBsSglAqk@yvDcS_wAyTwpBmPc|BwZknF',
+            'oFscB_GsaDiZmyMyLgtHgQonHqT{hKaPg}Dqq@m~Hym@c`EuiBudIabB{hF{pWifx@snA',
+            'w`GkFyVqf@y~BkoAi}Lel@wtc@}`@oaXi_C}pZsi@eqGsSuqJ|Lqeb@e]kgPcaAu}SkDw',
+            'zGhn@gjYh\\qlNZovJieBqja@ed@siO{[ol\\kCmjMe\\isHorCmec@uLebB}EqiBaCg}',
+            '@m@qwHrT_vFps@kkI`uAszIrpHuzYxx@e{Crw@kpDhN{wBtQarDy@knFgP_yCu\\wyCwy',
+            'A{kHo~@omEoYmoDaEcPiuAosDagD}rO{{AsyEihCayFilLaiUqm@_bAumFo}DgqA_uByi',
+            '@swC~AkzDlhA}xEvcBa}Cxk@ql@`rAo|@~bBq{@``Bye@djDww@z_C_cAtn@ye@nfC_eC',
+            '|gGahH~s@w}@``Fi~FpnAooC|u@wlEaEedRlYkrPvKerBfYs}Arg@m}AtrCkzElw@gjBb',
+            'h@woBhR{gCwGkgCc[wtCuOapAcFoh@uBy[yBgr@c@iq@o@wvEv@sp@`FajBfCaq@fIipA',
+            'dy@ewJlUc`ExGuaBdEmbBpBssArAuqBBg}@s@g{AkB{bBif@_bYmC}r@kDgm@sPq_BuJ_',
+            's@{X_{AsK_d@eM{d@wVgx@oWcu@??aDmOkNia@wFoSmDyMyCkPiBePwAob@XcQ|@oNdCo',
+            'SfFwXhEmOnLi\\lbAulB`X_d@|k@au@bc@oc@bqC}{BhwDgcD`l@ed@??bL{G|a@eTje@',
+            'oS~]cLr~Bgh@|b@}Jv}EieAlv@sPluD{z@nzA_]`|KchCtd@sPvb@wSb{@ko@f`RooQ~e',
+            '[upZbuIolI|gFafFzu@iq@nMmJ|OeJn^{Qjh@yQhc@uJ~j@iGdd@kAp~BkBxO{@|QsAfY',
+            'gEtYiGd]}Jpd@wRhVoNzNeK`j@ce@vgK}cJnSoSzQkVvUm^rSgc@`Uql@xIq\\vIgg@~k',
+            'Dyq[nIir@jNoq@xNwc@fYik@tk@su@neB}uBhqEesFjoGeyHtCoD|D}Ed|@ctAbIuOzqB',
+            '_}D~NgY`\\um@v[gm@v{Cw`G`w@o{AdjAwzBh{C}`Gpp@ypAxn@}mAfz@{bBbNia@??jI',
+            'ab@`CuOlC}YnAcV`@_^m@aeB}@yk@YuTuBg^uCkZiGk\\yGeY}Lu_@oOsZiTe[uWi[sl@',
+            'mo@soAauAsrBgzBqgAglAyd@ig@asAcyAklA}qAwHkGi{@s~@goAmsAyDeEirB_{B}IsJ',
+            'uEeFymAssAkdAmhAyTcVkFeEoKiH}l@kp@wg@sj@ku@ey@uh@kj@}EsFmG}Jk^_r@_f@m',
+            '~@ym@yjA??a@cFd@kBrCgDbAUnAcBhAyAdk@et@??kF}D??OL'
+        ].join('');
+    var route = /** @type {ol.geom.LineString} */ (new ol.format.Polyline({
+        factor: 1e6
+    }).readGeometry(polyline, {
+        dataProjection: 'EPSG:4326',
+        featureProjection: 'EPSG:3857'
+    }));
+    var routeCoords = route.getCoordinates();
+    var routeLength = routeCoords.length;
+    var routeFeature = new ol.Feature({
+        type: 'route',
+        geometry: route
+    });
+    var geoMarker = new ol.Feature({
+        type: 'geoMarker',
+        geometry: new ol.geom.Point(routeCoords[0])
+    });
+    var startMarker = new ol.Feature({
+        type: 'icon',
+        geometry: new ol.geom.Point(routeCoords[0])
+    });
+    var endMarker = new ol.Feature({
+        type: 'icon',
+        geometry: new ol.geom.Point(routeCoords[routeLength - 1])
+    });
+    var styles = {
+        'route': new ol.style.Style({
+            stroke: new ol.style.Stroke({
+                width: 6, color: [237, 212, 0, 0.8]
+            })
+        }),
+        'icon': new ol.style.Style({
+            image: new ol.style.Icon({
+                anchor: [0.5, 1],
+                src: 'https://openlayers.org/en/v4.6.5/examples/data/icon.png'
+            })
+        }),
+        'geoMarker': new ol.style.Style({
+            image: new ol.style.Circle({
+                radius: 7,
+                snapToPixel: false,
+                fill: new ol.style.Fill({ color: 'black' }),
+                stroke: new ol.style.Stroke({
+                    color: 'white', width: 2
+                })
+            })
+        })
+    };
+    var animating = false;
+    var speed, now;
+    var speedInput = document.getElementById('speed');
+    var startButton = document.getElementById('start-animation');
+
+
+    vectorLayer = new ol.layer.Vector({
+        source: new ol.source.Vector({
+            features: [routeFeature, geoMarker, startMarker, endMarker]
+        }),
+        style: function (feature) {
+            // hide geoMarker if animation is active
+            if (animating && feature.get('type') === 'geoMarker') {
+                return null;
+            }
+            return styles[feature.get('type')];
+        }
+    });
+
+    // var center = [-5639523.95, -3501274.52];
+    // var map = new ol.Map({
+    //     target: document.getElementById('map'),
+    //     loadTilesWhileAnimating: true,
+    //     view: new ol.View({
+    //         center: center,
+    //         zoom: 10,
+    //         minZoom: 2,
+    //         maxZoom: 19
+    //     }),
+    //     layers: [
+    //         new ol.layer.Tile({
+    //             source: new ol.source.OSM({ })
+    //         }),
+    //         vectorLayer
+    //     ]
+    // });
+
+    
+
+
+
+
+
+
+
+    var attribution = new ol.control.Attribution();//这是版权控件
+
+    var FullScreen = new ol.control.FullScreen();//这是全屏控件
+
+    //var center = ol.proj.transform([117.024967066,36.6827847272],  'EPSG:4326', 'BD:09');
+    var center = ol.proj.fromLonLat([117.024967066, 36.6827847272]);
+    var map = new ol.Map({
+        layers: [
+            new ol.layer.Tile({
+                source: new ol.source.OSM()
+            }),
+            vectorLayer
+        ],
+        controls: [attribution,FullScreen],//如果不设置 controls ，地图会默认设置
+        target: 'map',
+        view: new ol.View({
+            center: center,
+            //center:[0,0],
+            zoom: 8,
+            minZoom: 4,//缩小级别
+            maxZoom: 15//放大级别
+        })
+    });
+
+
+function sadian(){  //撒点
+	// 模拟后台数据
+    var trackData = [
+        {
+            "lon":120.124512,
+            "lat":35.978006
+        },
+        {
+            "lon":120.651855,
+            "lat":34.867905
+        },
+        {
+            "lon":121.398926,
+            "lat":33.779147
+        },
+        {
+            "lon":121.530762,
+            "lat":32.842674
+        }
+    ]
+    // 遍历得到点的集合
+    var features = []
+    for(var i=0;i<trackData.length;i++){
+        // 将点转换成地图识别的格式
+        var coordinate = ol.proj.transform([trackData[i].lon,trackData[i].lat],'EPSG:4326','EPSG:3857')
+        features[i] = new ol.Feature({
+            geometry: new ol.geom.Point(coordinate)
+        })
+    }
+
+    vectorSource = new ol.source.Vector({
+                features: features
+            });
+
+    // 点图层
+    vectorLayer = new ol.layer.Vector({
+            source: vectorSource,
+            style: new ol.style.Style({
+                image: new ol.style.Circle({
+                    radius: 5,
+                    stroke: new ol.style.Stroke({
+                        color:'#fff'
+                    }),
+                    fill: new ol.style.Fill({
+                        color:'#f00'
+                    })
+                })
+            })
+        })
+
+    map.addOverlay(vectorLayer);
+    //     var startMarker = new ol.Feature({
+	//       type: 'icon',
+	//       name: 'museum',
+	//       geometry: new ol.geom.Point(Sponit)
+	//     });
+	// var endMarker = new ol.Feature({
+	//       type: 'icon',
+	//       name: 'museum',
+	//       geometry: new ol.geom.Point(eponit)
+	//     });
+    // var vectorSource = new ol.source.Vector({});
+    // vectorSource.addFeature(startMarker);
+
+}
+var context_path = getRootPath();
+	function getRootPath() {  
+	    var pathName = window.location.pathname.substring(1);  
+	    var webName = pathName == '' ? '' : pathName.substring(0, pathName.indexOf('/'));  
+	    return window.location.protocol + '//' + window.location.host + '/' + webName + '/';  
+	}
+function addIcon (lonlat, tip) {
+        var point = new ol.geom.Point(ol.proj.transform(lonlat, 'EPSG:4326', 'EPSG:3857'));
+        var pointFeature = new ol.Feature(point);
+        pointFeature.setStyle(
+            new ol.style.Style({
+                image: new ol.style.Icon({
+                    anchor: [0.5, 0.5],
+                    crossOrigin: 'anonymous',
+                    src: context_path + '/images/test.png'
+                }),
+                text: new ol.style.Text({
+                    text: tip,
+                    scale: 1.3,
+                    fill: new ol.style.Fill({
+                      color: '#000000'
+                    }),
+                    stroke: new ol.style.Stroke({
+                      color: '#FFFF99',
+                      width: 3.5
+                    })
+                })
+            })
+        );
+        vectorSource.addFeature(pointFeature);
+
+
+}
+function huifang(){  //轨迹回放
+	
+}
+function quanping(){  //全屏
+	//添加全屏控件
+	map.addControl(new ol.control.FullScreen());
+}
+function jvji(){  //地震点聚集
+	// 初始化聚集要素的半径
+    // 可自由定义要素半径的计算规则
+    var maxFeatureCount;
+    var earthquakeCluster = null;
+    var calculateClusterInfo = (resolution) => {
+        maxFeatureCount = 0;
+        var features = earthquakeCluster.getSource().getFeatures();
+        var feature, radius;
+        for (let i = features.length - 1; i >= 0; i--) {
+            feature = features[i];
+            var originalFeatures = feature.get('features');
+            var extent = ol.extent.createEmpty();
+            let j = (void 0), jj = (void 0);
+            for (let j = 0, jj = originalFeatures.length; j<jj; ++j) {
+                ol.extent.extend(extent, originalFeatures[j].getGeometry().getExtent());
+            }
+            maxFeatureCount = Math.max(maxFeatureCount, jj);
+            radius = 0.15 * (ol.extent.getWidth(extent) + ol.extent.getHeight(extent)) / resolution;
+            feature.set('radius', radius);
+        }
+    }
+
+    // 样式函数，对每个feature返回一个样式
+    var currentResolution;
+    var styleFunction = (feature, resolution) => {
+        if (resolution != currentResolution) {
+            calculateClusterInfo(resolution);
+            currentResolution = resolution;
+        }
+        var style;
+        var size = feature.get('features').length;
+        if (size > 1) {
+            style = new ol.style.Style({
+                image: new ol.style.Circle({
+                    radius: feature.get('radius'),
+                    fill: new ol.style.Fill({
+                        color: [255, 153, 0]
+                    })
+                }),
+                text: new ol.style.Text({
+                    text: size.toString(),
+                    fill: new ol.style.Fill({
+                        color: '#fff'
+                    }),
+                    stroke: new ol.style.Stroke({
+                        color: 'rgba(0, 0, 0, 0.6)',
+                        width: 3
+                    })
+                })
+            })
+        } else {
+            // 每个地震点的默认样式
+            style = new ol.style.Style({
+                image: new ol.style.Circle({
+                    radius: 3,
+                    fill: new ol.style.Fill({
+                        color: 'rgb(255, 0, 0)'
+                    })
+                })
+            });
+        }
+        return style;
+    }
+    var features = [];
+    var data = 
+    	[
+	    	{name:"烟台",x:121.395828593,y:37.5222116460,count:10},  
+	        {name:"威海",x:122.162997504,y:37.5104204643,count:30},  
+	        {name:"临沂",x:118.359730268,y:35.0536423859,count:50},  
+	        {name:"日照",x:119.464297498,y:35.4290864503,count:70},  
+	        {name:"泰安",x:117.135508297,y:36.1841790950,count:90},
+	        {name:"青岛",x:120.384428184,y:36.1052149013,count:90},
+	        {name:"济宁",x:116.599115206,y:35.3889248520,count:60},  
+	        {name:"济南",x:117.024967066,y:36.6827847272,count:60},
+	        {name:"潍坊",x:119.100000000,y:36.6289248520,count:60},
+	        {name:"荷泽",x:115.438071385,y:35.2473115457,count:20}
+        ];
+    for (var i=0; i<data.length; i++) { 
+    	var geom = new ol.geom.Point(ol.proj.transform([data[i].x, data[i].y], 'EPSG:4326', 'EPSG:3857'));
+    	var feature = new ol.Feature(geom);
+    	features.push(feature);
+    	feature.data = i;
+    }
+     var vectorSource = new ol.source.Vector({
+         features : features
+      });
+	// 聚类图层
+    earthquakeCluster = new ol.layer.Vector({
+        source: new ol.source.Cluster({
+            distance: 80,   // 聚类阈值，当两点间距离小于20，便聚类为一个点
+            /* source: new ol.source.Vector({
+                format: new ol.format.GeoJSON(),
+                //url: 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.geojson'
+                url:'data/all_month.geojson'
+            }) */
+            source:vectorSource
+        }),
+        style: styleFunction
+    });
+    map.addLayer(earthquakeCluster);
+}
+function yyxg(){  //撒点并实现阴影效果
+	
+}
+
+
+var moveFeature = function (event) {
+        var vectorContext = event.vectorContext;
+        var frameState = event.frameState;
+
+        if (animating) {
+            var elapsedTime = frameState.time - now;
+            // here the trick to increase speed is to jump some indexes
+            // on lineString coordinates
+            var index = Math.round(speed * elapsedTime / 1000);
+
+            if (index >= routeLength) {
+                stopAnimation(true);
+                return;
+            }
+
+            var currentPoint = new ol.geom.Point(routeCoords[index]);
+            var feature = new ol.Feature(currentPoint);
+            vectorContext.drawFeature(feature, styles.geoMarker);
+        }
+        // tell OpenLayers to continue the postcompose animation
+        map.render();
+    };
+    function startAnimation() {
+        if (animating) {
+            stopAnimation(false);
+        } else {
+            animating = true;
+            now = new Date().getTime();
+            speed = speedInput.value;
+            startButton.textContent = 'Cancel Animation';
+            // hide geoMarker
+            geoMarker.setStyle(null);
+            // just in case you pan somewhere else
+            map.getView().setCenter(center);
+            map.on('postcompose', moveFeature);
+            map.render();
+        }
+    }
+    /**
+     * @param {boolean} ended end of animation.
+     */
+    function stopAnimation(ended) {
+        animating = false;
+        startButton.textContent = 'Start Animation';
+
+        // if animation cancelled set the marker at the beginning
+        var coord = ended ? routeCoords[routeLength - 1] : routeCoords[0];
+        /* @type {ol.geom.Point} */ (geoMarker.getGeometry())
+            .setCoordinates(coord);
+        //remove listener
+        map.un('postcompose', moveFeature);
+    }
+    startButton.addEventListener('click', startAnimation, false);
+
+
+    </script>
+  </body>
+</html>
